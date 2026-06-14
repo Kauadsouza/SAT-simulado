@@ -6,7 +6,13 @@ const navItems = [
     to: '/',
     label: 'Dashboard',
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
+      </svg>
+    ),
+    iconSm: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
         <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
       </svg>
@@ -16,7 +22,12 @@ const navItems = [
     to: '/simulados',
     label: 'Simulados',
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
+      </svg>
+    ),
+    iconSm: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/>
       </svg>
     ),
@@ -25,7 +36,12 @@ const navItems = [
     to: '/historico',
     label: 'Histórico',
     icon: (
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+      </svg>
+    ),
+    iconSm: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
       </svg>
     ),
@@ -37,6 +53,7 @@ export function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg-primary)' }}>
+      {/* ── Top Header ─────────────────────────────────────────────── */}
       <header
         style={{
           background: 'linear-gradient(90deg, var(--bg-secondary) 0%, color-mix(in srgb, var(--bg-secondary) 95%, var(--accent)) 100%)',
@@ -47,9 +64,9 @@ export function Layout() {
           backdropFilter: 'blur(12px)',
         }}
       >
-        <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 py-2.5 flex items-center justify-between gap-3">
           {/* Logo */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2 shrink-0">
             <div
               className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
               style={{
@@ -75,8 +92,8 @@ export function Layout() {
             </span>
           </div>
 
-          {/* Nav */}
-          <nav className="flex items-center gap-1">
+          {/* Desktop Nav — hidden on mobile */}
+          <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -106,16 +123,12 @@ export function Layout() {
             ))}
           </nav>
 
-          {/* Right */}
+          {/* Right actions */}
           <div className="flex items-center gap-2">
             <button
               onClick={toggleTheme}
               className="p-2 rounded-xl transition-all"
-              style={{
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border)',
-                color: 'var(--text-secondary)',
-              }}
+              style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
               title="Alternar tema"
             >
               {theme === 'dark' ? (
@@ -142,18 +155,14 @@ export function Layout() {
             >
               {user?.name?.[0]?.toUpperCase() ?? 'U'}
             </div>
-            <span className="text-sm font-medium hidden md:block" style={{ color: 'var(--text-primary)' }}>
+            <span className="text-sm font-medium hidden lg:block" style={{ color: 'var(--text-primary)' }}>
               {user?.name?.split(' ')[0]}
             </span>
 
             <button
               onClick={logout}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
-              style={{
-                background: 'var(--bg-card)',
-                border: '1px solid var(--border)',
-                color: 'var(--text-secondary)',
-              }}
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold transition-all hidden sm:block"
+              style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}
             >
               Sair
             </button>
@@ -161,9 +170,77 @@ export function Layout() {
         </div>
       </header>
 
-      <main className="flex-1">
+      {/* ── Content — add bottom padding on mobile for the tab bar ── */}
+      <main className="flex-1 pb-20 md:pb-0">
         <Outlet />
       </main>
+
+      {/* ── Bottom Tab Bar — mobile only ───────────────────────────── */}
+      <nav
+        className="md:hidden fixed bottom-0 left-0 right-0 z-40"
+        style={{
+          background: 'var(--bg-secondary)',
+          borderTop: '1px solid var(--border-glow)',
+          backdropFilter: 'blur(16px)',
+        }}
+      >
+        <div className="flex items-stretch">
+          {navItems.map((item) => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === '/'}
+              className="flex-1"
+              style={({ isActive }) => ({
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '10px 4px 12px',
+                textDecoration: 'none',
+                color: isActive ? 'var(--accent)' : 'var(--text-secondary)',
+                position: 'relative',
+                transition: 'color 0.18s',
+              })}
+            >
+              {({ isActive }) => (
+                <>
+                  {isActive && (
+                    <div
+                      style={{
+                        position: 'absolute',
+                        top: 0, left: '20%', right: '20%',
+                        height: 2,
+                        borderRadius: '0 0 4px 4px',
+                        background: 'linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%)',
+                        boxShadow: '0 0 8px var(--accent-glow)',
+                      }}
+                    />
+                  )}
+                  {item.iconSm}
+                  <span style={{ fontSize: '0.65rem', fontWeight: 600, marginTop: 3, lineHeight: 1 }}>
+                    {item.label}
+                  </span>
+                </>
+              )}
+            </NavLink>
+          ))}
+
+          {/* Logout in bottom bar on mobile */}
+          <button
+            onClick={logout}
+            className="flex-1 flex flex-col items-center justify-center"
+            style={{ padding: '10px 4px 12px', background: 'none', border: 'none', color: 'var(--text-secondary)' }}
+          >
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span style={{ fontSize: '0.65rem', fontWeight: 600, marginTop: 3, lineHeight: 1 }}>Sair</span>
+          </button>
+        </div>
+      </nav>
     </div>
   );
 }

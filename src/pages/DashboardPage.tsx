@@ -106,7 +106,7 @@ export function DashboardPage() {
       {/* Paused session banner */}
       {paused && (
         <div
-          className="rounded-2xl p-4 mb-6 flex items-center justify-between"
+          className="rounded-2xl p-4 mb-6 flex items-center justify-between gap-3"
           style={{
             background: 'rgba(249,212,35,0.08)',
             border: '1px solid rgba(249,212,35,0.35)',
@@ -140,7 +140,7 @@ export function DashboardPage() {
       )}
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-8">
         {statCards.map((card) => (
           <div
             key={card.label}
@@ -170,7 +170,7 @@ export function DashboardPage() {
 
       {/* CTA */}
       <div
-        className="rounded-2xl p-6 mb-8 flex items-center justify-between relative overflow-hidden"
+        className="rounded-2xl p-5 sm:p-6 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden"
         style={{
           background: 'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.08) 100%)',
           border: '1px solid rgba(99,102,241,0.3)',
@@ -197,7 +197,7 @@ export function DashboardPage() {
         </div>
         <button
           onClick={() => navigate('/simulados')}
-          className="px-6 py-3 rounded-xl font-bold whitespace-nowrap ml-4 shrink-0 transition-all hover:opacity-90"
+          className="w-full sm:w-auto px-6 py-3 rounded-xl font-bold whitespace-nowrap shrink-0 transition-all hover:opacity-90"
           style={{
             background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%)',
             color: '#fff',
@@ -215,10 +215,10 @@ export function DashboardPage() {
             className="rounded-2xl p-5"
             style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glow)' }}
           >
-            <h3 className="font-bold mb-4 text-sm" style={{ color: 'var(--text-primary)' }}>
+            <h3 className="font-bold mb-3 text-sm" style={{ color: 'var(--text-primary)' }}>
               Evolução de Pontuação
             </h3>
-            <ResponsiveContainer width="100%" height={200}>
+            <ResponsiveContainer width="100%" height={170}>
               <LineChart data={lineData}>
                 <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
                 <XAxis dataKey="name" tick={{ fill: textColor, fontSize: 11 }} />
@@ -240,10 +240,10 @@ export function DashboardPage() {
             className="rounded-2xl p-5"
             style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glow)' }}
           >
-            <h3 className="font-bold mb-4 text-sm" style={{ color: 'var(--text-primary)' }}>
+            <h3 className="font-bold mb-3 text-sm" style={{ color: 'var(--text-primary)' }}>
               Desempenho por Domínio (% acerto)
             </h3>
-            <ResponsiveContainer width="100%" height={200}>
+            <ResponsiveContainer width="100%" height={170}>
               <RadarChart data={radarData}>
                 <PolarGrid stroke={gridColor} />
                 <PolarAngleAxis dataKey="domain" tick={{ fill: textColor, fontSize: 10 }} />
