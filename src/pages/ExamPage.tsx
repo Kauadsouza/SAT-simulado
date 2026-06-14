@@ -11,14 +11,22 @@ import { gradeAnswer } from '../lib/scoring';
 
 // ─── Desmos Calculator ────────────────────────────────────────────────────────
 function DesmosCalc({ onClose }: { onClose: () => void }) {
+  const isMobile = window.innerWidth < 640;
   return (
     <div
-      className="fixed bottom-20 right-4 z-40 rounded-2xl overflow-hidden"
+      className="fixed z-40 rounded-2xl overflow-hidden"
       style={{
-        width: 420, height: 330,
+        bottom: isMobile ? 0 : 72,
+        left: isMobile ? 0 : 'auto',
+        right: isMobile ? 0 : 16,
+        width: isMobile ? '100%' : 420,
+        height: isMobile ? '60vw' : 330,
+        maxHeight: isMobile ? 320 : 330,
         background: 'var(--bg-card)',
         border: '1px solid var(--border-glow)',
         boxShadow: '0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(99,102,241,0.1)',
+        borderBottomLeftRadius: isMobile ? 0 : undefined,
+        borderBottomRightRadius: isMobile ? 0 : undefined,
       }}
     >
       <div
@@ -40,7 +48,7 @@ function DesmosCalc({ onClose }: { onClose: () => void }) {
       </div>
       <iframe
         src="https://www.desmos.com/calculator"
-        style={{ width: '100%', height: 286, border: 'none' }}
+        style={{ width: '100%', height: 'calc(100% - 36px)', border: 'none' }}
         title="Desmos Calculator"
       />
     </div>
@@ -349,7 +357,7 @@ export function ExamPage() {
     <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg-primary)' }}>
       {/* ─── Top Bar ─────────────────────────────────────────────────── */}
       <header
-        className="flex items-center justify-between px-4 py-2 shrink-0 z-30"
+        className="flex items-center justify-between px-3 sm:px-4 shrink-0 z-30"
         style={{
           background: 'linear-gradient(90deg, var(--bg-secondary) 0%, color-mix(in srgb, var(--bg-secondary) 95%, var(--accent)) 100%)',
           borderBottom: '1px solid var(--border-glow)',
@@ -358,23 +366,15 @@ export function ExamPage() {
         }}
       >
         {/* Left: Section label */}
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2 min-w-0">
           <div
-            className="w-1.5 h-5 rounded-full"
+            className="w-1 h-5 rounded-full shrink-0"
             style={{ background: isRW ? 'var(--cyan)' : 'var(--warning)' }}
           />
-          <span className="text-sm font-bold" style={{ color: 'var(--text-primary)' }}>
-            {isRW ? 'Reading & Writing' : 'Math'} — Módulo {currentModuleId?.endsWith('1') ? '1' : '2'}
-          </span>
-          <span
-            className="text-xs px-2 py-0.5 rounded-full hidden sm:inline"
-            style={{
-              background: 'var(--bg-card)',
-              color: 'var(--text-secondary)',
-              border: '1px solid var(--border-glow)',
-            }}
-          >
-            {DOMAIN_LABELS[question.domain]}
+          <span className="text-xs sm:text-sm font-bold truncate" style={{ color: 'var(--text-primary)' }}>
+            <span className="hidden sm:inline">{isRW ? 'Reading & Writing' : 'Math'} — </span>
+            <span className="sm:hidden">{isRW ? 'R&W' : 'Math'} </span>
+            Mód. {currentModuleId?.endsWith('1') ? '1' : '2'}
           </span>
         </div>
 
@@ -382,7 +382,7 @@ export function ExamPage() {
         <Timer running={isRunning} onExpire={handleExpire} />
 
         {/* Right: Tools */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-1 shrink-0">
           {isMath && (
             <>
               <ToolBtn icon={<CalcIcon />} label="Calc" active={showCalc} onClick={() => setShowCalc((v) => !v)} />
@@ -391,21 +391,26 @@ export function ExamPage() {
           )}
           <button
             onClick={() => setShowAbandonConfirm(true)}
-            className="text-xs px-2.5 py-1.5 rounded-xl transition-colors hover:opacity-80"
+            className="p-2 rounded-xl transition-colors hover:opacity-80"
             style={{
               color: 'var(--danger)',
               border: '1px solid rgba(255,77,109,0.25)',
               background: 'rgba(255,77,109,0.06)',
             }}
+            title="Sair"
           >
-            Sair
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
           </button>
         </div>
       </header>
 
       {/* ─── Content Area ────────────────────────────────────────────── */}
       <main className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
           {/* Question number + mark */}
           <div className="flex items-center justify-between mb-4">
             <span className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>
@@ -540,25 +545,27 @@ export function ExamPage() {
 
       {/* ─── Bottom Bar ──────────────────────────────────────────────── */}
       <footer
-        className="flex items-center justify-between px-4 py-2 shrink-0 z-30"
+        className="flex items-center justify-between px-3 sm:px-4 py-2 shrink-0 z-30"
         style={{
           background: 'linear-gradient(90deg, var(--bg-secondary) 0%, color-mix(in srgb, var(--bg-secondary) 95%, var(--accent)) 100%)',
           borderTop: '1px solid var(--border-glow)',
-          minHeight: 52,
+          minHeight: 56,
         }}
       >
         <button
           disabled={currentQuestionIndex === 0}
           onClick={() => setCurrentQuestion(currentQuestionIndex - 1)}
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all disabled:opacity-25"
-          style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glow)', color: 'var(--text-primary)' }}
+          className="flex items-center gap-1 px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-25"
+          style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glow)', color: 'var(--text-primary)', minWidth: 44 }}
         >
-          ← Anterior
+          <span className="hidden sm:inline">← </span>
+          <span className="sm:hidden">‹</span>
+          <span className="hidden sm:inline">Anterior</span>
         </button>
 
         <button
           onClick={() => setShowNavigator(true)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs transition-colors"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors"
           style={{
             background: 'var(--bg-card)',
             border: '1px solid var(--border-glow)',
@@ -572,26 +579,29 @@ export function ExamPage() {
         {currentQuestionIndex < totalQ - 1 ? (
           <button
             onClick={() => setCurrentQuestion(currentQuestionIndex + 1)}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
+            className="flex items-center gap-1 px-3 sm:px-4 py-2.5 rounded-xl text-sm font-semibold transition-all hover:opacity-90"
             style={{
               background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%)',
               color: '#fff',
               boxShadow: '0 2px 12px var(--accent-glow)',
+              minWidth: 44,
             }}
           >
-            Próxima →
+            <span className="hidden sm:inline">Próxima →</span>
+            <span className="sm:hidden">›</span>
           </button>
         ) : (
           <button
             onClick={handleSubmitModule}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all hover:opacity-90"
+            className="flex items-center gap-1 px-3 sm:px-4 py-2.5 rounded-xl text-sm font-bold transition-all hover:opacity-90"
             style={{
               background: 'linear-gradient(135deg, #10f0a0 0%, #06d68a 100%)',
               color: '#000',
               boxShadow: '0 2px 14px rgba(16,240,160,0.3)',
             }}
           >
-            Enviar Módulo ✓
+            <span className="hidden sm:inline">Enviar Módulo ✓</span>
+            <span className="sm:hidden">Enviar ✓</span>
           </button>
         )}
       </footer>

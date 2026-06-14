@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAppStore } from '../store/appStore';
 
 export function LoginPage() {
-  const [name, setName] = useState('Kauã Diniz');
+  const [name, setName] = useState('Nathaly');
   const { login } = useAppStore();
 
   const handleSubmit = (e: React.FormEvent) => {

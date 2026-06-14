@@ -295,3 +295,13 @@ input:focus, textarea:focus {
   outline: none;
   box-shadow: 0 0 0 2px var(--accent-glow), 0 0 0 1px var(--accent) !important;
 }
+
+/* ─── Safe area (iOS notch / home bar) ───────────────────────────── */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .mobile-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* ─── Prevent horizontal overflow on mobile ─────────────────────── */
+body { overflow-x: hidden; }

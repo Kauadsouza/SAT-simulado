@@ -103,7 +103,7 @@ export function SimuladosPage() {
           return (
             <div
               key={tier}
-              className="rounded-2xl p-6 flex items-center justify-between card-hover relative overflow-hidden"
+              className="rounded-2xl p-4 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 card-hover relative overflow-hidden"
               style={{
                 background: `linear-gradient(135deg, ${cfg.bg} 0%, var(--bg-card) 60%)`,
                 border: `1px solid color-mix(in srgb, ${cfg.accent} 25%, var(--border-glow))`,
@@ -115,7 +115,7 @@ export function SimuladosPage() {
                 style={{ background: cfg.accent, boxShadow: `0 0 10px ${cfg.glow}` }}
               />
 
-              <div className="flex items-start gap-4 pl-3">
+              <div className="flex items-start gap-3 pl-3">
                 <div
                   className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shrink-0"
                   style={{ background: cfg.bg, boxShadow: `0 0 16px ${cfg.glow}` }}
@@ -149,7 +149,7 @@ export function SimuladosPage() {
 
               <button
                 onClick={() => handleStart(tier)}
-                className="px-5 py-2.5 rounded-xl font-bold ml-4 shrink-0 transition-all hover:opacity-90 hover:-translate-y-px"
+                className="w-full sm:w-auto px-5 py-3 rounded-xl font-bold shrink-0 transition-all hover:opacity-90 text-center"
                 style={{
                   background: tier === 'easy'
                     ? 'linear-gradient(135deg, #10f0a0 0%, #06d68a 100%)'

@@ -321,7 +321,7 @@ export function HistoricoPage() {
                 <h3 className="font-bold mb-4 text-sm" style={{ color: 'var(--text-primary)' }}>
                   Desempenho Agregado por Domínio
                 </h3>
-                <ResponsiveContainer width="100%" height={200}>
+                <ResponsiveContainer width="100%" height={170}>
                   <BarChart data={barData} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" stroke={gridColor} horizontal={false} />
                     <XAxis type="number" domain={[0, 100]} tick={{ fill: textColor, fontSize: 11 }} unit="%" />
@@ -355,19 +355,19 @@ export function HistoricoPage() {
                       border: '1px solid var(--border-glow)',
                     }}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2.5 min-w-0">
                       <div
-                        className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0"
+                        className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0"
                         style={{ background: 'var(--bg-secondary)' }}
                       >
                         {TIER_ICONS[s.mode] ?? '📝'}
                       </div>
-                      <div>
-                        <div className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>
+                      <div className="min-w-0">
+                        <div className="font-bold text-sm truncate" style={{ color: 'var(--text-primary)' }}>
                           {TIER_LABELS[s.mode]} — {new Date(s.completedAt ?? s.startedAt).toLocaleDateString('pt-BR')}
                         </div>
                         <div className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                          RW: {s.rwScaled}  ·  Math: {s.mathScaled}  ·  {new Date(s.completedAt ?? s.startedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                          RW: {s.rwScaled} · Math: {s.mathScaled}
                         </div>
                       </div>
                     </div>
