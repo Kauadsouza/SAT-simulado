@@ -7,17 +7,14 @@ import { DashboardPage } from './pages/DashboardPage';
 import { SimuladosPage } from './pages/SimuladosPage';
 import { HistoricoPage } from './pages/HistoricoPage';
 import { ExamPage } from './pages/ExamPage';
+import { GlobalTranslation } from './components/GlobalTranslation';
 
-// Apply theme class to <html> so CSS vars cascade everywhere (including body bg)
 function ThemeSync() {
   const { theme } = useAppStore();
   useEffect(() => {
     const el = document.documentElement;
-    if (theme === 'light') {
-      el.classList.add('light');
-    } else {
-      el.classList.remove('light');
-    }
+    if (theme === 'light') el.classList.add('light');
+    else el.classList.remove('light');
   }, [theme]);
   return null;
 }
@@ -34,11 +31,12 @@ export default function App() {
   return (
     <BrowserRouter>
       <ThemeSync />
+      <GlobalTranslation />
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
-        <Route path="/exam" element={user ? <ExamPage /> : <Navigate to="/login" replace />} />
+        <Route path="/exam"  element={user ? <ExamPage /> : <Navigate to="/login" replace />} />
         <Route element={<ProtectedLayout />}>
-          <Route path="/" element={<DashboardPage />} />
+          <Route path="/"          element={<DashboardPage />} />
           <Route path="/simulados" element={<SimuladosPage />} />
           <Route path="/historico" element={<HistoricoPage />} />
         </Route>
