@@ -13,48 +13,91 @@ export function LoginPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center px-4"
+      className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden"
       style={{ background: 'var(--bg-primary)' }}
     >
-      <div className="w-full max-w-sm">
-        {/* Logo / Brand */}
+      {/* Ambient glow orbs */}
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          width: 500, height: 500,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)',
+          top: '10%', left: '20%',
+          filter: 'blur(40px)',
+        }}
+      />
+      <div
+        className="absolute pointer-events-none"
+        style={{
+          width: 400, height: 400,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(139,92,246,0.1) 0%, transparent 70%)',
+          bottom: '10%', right: '15%',
+          filter: 'blur(40px)',
+        }}
+      />
+
+      <div className="w-full max-w-sm relative">
+        {/* Logo */}
         <div className="text-center mb-8">
           <div
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4"
-            style={{ background: 'var(--accent)', boxShadow: '0 0 40px color-mix(in srgb, var(--accent) 40%, transparent)' }}
+            className="inline-flex items-center justify-center w-18 h-18 rounded-2xl mb-5"
+            style={{
+              width: 72, height: 72,
+              background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%)',
+              boxShadow: '0 0 50px var(--accent-glow), 0 0 100px rgba(99,102,241,0.15)',
+            }}
           >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
-              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+            <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
             </svg>
           </div>
-          <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+
+          <h1
+            className="text-3xl font-black tracking-tight mb-1"
+            style={{
+              background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 60%, var(--accent-2) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
             SAT Simulator
           </h1>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-            Digital SAT practice — faithful to the real exam
+          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+            Treino digital fiel ao SAT oficial
           </p>
         </div>
 
-        {/* Login card */}
+        {/* Card */}
         <form
           onSubmit={handleSubmit}
-          className="rounded-2xl p-7 shadow-xl"
-          style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+          className="rounded-2xl p-7"
+          style={{
+            background: 'linear-gradient(160deg, var(--bg-card) 0%, color-mix(in srgb, var(--bg-card) 80%, var(--bg-secondary)) 100%)',
+            border: '1px solid var(--border-glow)',
+            boxShadow: '0 24px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(99,102,241,0.08), inset 0 1px 0 rgba(255,255,255,0.04)',
+          }}
         >
-          <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-            Your Name
+          <label
+            className="block text-xs font-bold uppercase tracking-widest mb-2"
+            style={{ color: 'var(--text-secondary)' }}
+          >
+            Seu Nome
           </label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Enter your name"
-            className="w-full px-4 py-3 rounded-xl mb-5 outline-none text-base transition-colors"
+            placeholder="Digite seu nome"
+            className="w-full px-4 py-3 rounded-xl mb-5 text-base"
             style={{
               background: 'var(--bg-secondary)',
-              border: '1.5px solid var(--border)',
+              border: '1.5px solid var(--border-glow)',
               color: 'var(--text-primary)',
+              outline: 'none',
             }}
             autoFocus
             onFocus={(e) => e.target.select()}
@@ -63,20 +106,35 @@ export function LoginPage() {
           <button
             type="submit"
             disabled={!name.trim()}
-            className="w-full py-3 rounded-xl font-semibold text-base transition-all disabled:opacity-40"
-            style={{ background: 'var(--accent)', color: '#fff' }}
+            className="w-full py-3.5 rounded-xl font-bold text-base transition-all disabled:opacity-30"
+            style={{
+              background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%)',
+              color: '#fff',
+              boxShadow: name.trim() ? '0 4px 20px var(--accent-glow)' : 'none',
+            }}
           >
-            Enter →
+            Entrar →
           </button>
 
           <p className="text-center text-xs mt-4" style={{ color: 'var(--text-secondary)' }}>
-            No password required. Your history is stored per name.
+            Sem senha. Histórico salvo localmente por nome.
           </p>
         </form>
 
-        <p className="text-center text-xs mt-6" style={{ color: 'var(--text-secondary)' }}>
-          All data stored locally in your browser.
-        </p>
+        {/* Tip */}
+        <div
+          className="mt-5 rounded-xl p-3 flex items-start gap-2.5"
+          style={{
+            background: 'rgba(99,102,241,0.07)',
+            border: '1px solid rgba(99,102,241,0.18)',
+          }}
+        >
+          <span style={{ fontSize: 15 }}>💡</span>
+          <p className="text-xs" style={{ color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            <strong style={{ color: 'var(--accent)' }}>Dica:</strong> Clique com o botão direito em qualquer palavra
+            para ver a tradução imediatamente.
+          </p>
+        </div>
       </div>
     </div>
   );

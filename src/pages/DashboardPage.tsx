@@ -37,15 +37,13 @@ export function DashboardPage() {
     ? Math.round(completed.reduce((sum, s) => sum + (s.totalScaled ?? 0), 0) / completed.length)
     : 0;
 
-  // Chart data
   const lineData = completed.slice(-10).map((s, i) => ({
-    name: `Test ${i + 1}`,
+    name: `#${i + 1}`,
     RW: s.rwScaled ?? 0,
     Math: s.mathScaled ?? 0,
     Total: s.totalScaled ?? 0,
   }));
 
-  // Domain aggregates
   const domainAgg: Record<string, { correct: number; total: number }> = {};
   for (const s of completed) {
     for (const mod of Object.values(s.modules)) {
@@ -65,12 +63,12 @@ export function DashboardPage() {
     pct: total > 0 ? Math.round((correct / total) * 100) : 0,
   }));
 
-  // Find weakest domain
-  const weakest = radarData.sort((a, b) => a.pct - b.pct)[0];
-  const strongest = [...radarData].sort((a, b) => b.pct - a.pct)[0];
+  const sorted = [...radarData].sort((a, b) => a.pct - b.pct);
+  const weakest = sorted[0];
+  const strongest = sorted[sorted.length - 1];
 
-  const textColor = theme === 'dark' ? '#8b90a7' : '#6b7280';
-  const gridColor = theme === 'dark' ? '#2d3148' : '#dde1ef';
+  const textColor = theme === 'dark' ? '#7b82a8' : '#6b7280';
+  const gridColor = theme === 'dark' ? '#1e2440' : '#dde2f5';
 
   const paused = !activeSession
     ? null
@@ -78,62 +76,92 @@ export function DashboardPage() {
     ? activeSession
     : null;
 
+  const statCards = [
+    { label: 'Best Score', value: best || '—', sub: 'out of 1600', accent: 'var(--accent)', glow: 'var(--accent-glow)', icon: '🏆' },
+    { label: 'Average', value: avg || '—', sub: 'all completed tests', accent: 'var(--cyan)', glow: 'rgba(34,211,238,0.25)', icon: '📊' },
+    { label: 'Tests Taken', value: completed.length, sub: 'completed', accent: 'var(--success)', glow: 'rgba(16,240,160,0.2)', icon: '✅' },
+    { label: 'Weakest Area', value: weakest?.domain?.split(' ')[0] ?? '—', sub: weakest ? `${weakest.pct}% correct` : 'no data yet', accent: 'var(--danger)', glow: 'rgba(255,77,109,0.2)', icon: '⚠️' },
+  ];
+
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
-      {/* Header greeting */}
+      {/* Header */}
       <div className="mb-8">
-        <h1 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
-          Hello, {user?.name?.split(' ')[0]} 👋
+        <h1
+          className="text-3xl font-black tracking-tight mb-1"
+          style={{
+            background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 60%, var(--purple) 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          Olá, {user?.name?.split(' ')[0]} 👋
         </h1>
-        <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-          Track your SAT progress and start a new practice test.
+        <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+          Acompanhe seu progresso e inicie um novo simulado.
         </p>
       </div>
 
       {/* Paused session banner */}
       {paused && (
         <div
-          className="rounded-xl p-4 mb-6 flex items-center justify-between"
-          style={{ background: 'color-mix(in srgb, var(--warning) 12%, transparent)', border: '1px solid var(--warning)' }}
+          className="rounded-2xl p-4 mb-6 flex items-center justify-between"
+          style={{
+            background: 'rgba(249,212,35,0.08)',
+            border: '1px solid rgba(249,212,35,0.35)',
+            boxShadow: '0 0 30px rgba(249,212,35,0.07)',
+          }}
         >
-          <div>
-            <span className="font-semibold text-sm" style={{ color: 'var(--warning)' }}>
-              Test in progress — {paused.mode} mode
-            </span>
-            <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-              Phase: {paused.phase}
-            </p>
+          <div className="flex items-center gap-3">
+            <div
+              className="w-9 h-9 rounded-xl flex items-center justify-center text-lg shrink-0"
+              style={{ background: 'rgba(249,212,35,0.15)' }}
+            >
+              ⏸️
+            </div>
+            <div>
+              <span className="font-semibold text-sm" style={{ color: 'var(--warning)' }}>
+                Teste em andamento — modo {paused.mode}
+              </span>
+              <p className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
+                Fase: {paused.phase.replace(/_/g, ' ').toUpperCase()}
+              </p>
+            </div>
           </div>
           <button
             onClick={() => navigate('/exam')}
-            className="px-4 py-2 rounded-lg text-sm font-semibold"
+            className="px-4 py-2 rounded-xl text-sm font-bold shrink-0 ml-4 transition-all hover:opacity-90"
             style={{ background: 'var(--warning)', color: '#000' }}
           >
-            Continue →
+            Continuar →
           </button>
         </div>
       )}
 
-      {/* Summary cards */}
+      {/* Stat cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-        {[
-          { label: 'Best Score', value: best || '—', sub: 'out of 1600' },
-          { label: 'Average Score', value: avg || '—', sub: 'all tests' },
-          { label: 'Tests Taken', value: completed.length, sub: 'completed' },
-          { label: 'Weakest Area', value: weakest?.domain?.split(' ')[0] ?? '—', sub: weakest ? `${weakest.pct}% correct` : 'no data yet' },
-        ].map((card) => (
+        {statCards.map((card) => (
           <div
             key={card.label}
-            className="rounded-xl p-5"
-            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+            className="rounded-2xl p-5 card-hover"
+            style={{
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border-glow)',
+              boxShadow: `0 0 0 1px rgba(0,0,0,0.2), 0 4px 20px rgba(0,0,0,0.15)`,
+            }}
           >
-            <div className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+            <div className="text-2xl mb-2">{card.icon}</div>
+            <div
+              className="text-2xl font-black mb-0.5"
+              style={{ color: card.accent }}
+            >
               {card.value}
             </div>
-            <div className="text-xs font-medium mt-0.5" style={{ color: 'var(--text-secondary)' }}>
+            <div className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>
               {card.label}
             </div>
-            <div className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)', opacity: 0.7 }}>
+            <div className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
               {card.sub}
             </div>
           </div>
@@ -142,34 +170,53 @@ export function DashboardPage() {
 
       {/* CTA */}
       <div
-        className="rounded-2xl p-6 mb-8 flex items-center justify-between"
-        style={{ background: 'color-mix(in srgb, var(--accent) 8%, var(--bg-card))', border: '1px solid color-mix(in srgb, var(--accent) 30%, var(--border))' }}
+        className="rounded-2xl p-6 mb-8 flex items-center justify-between relative overflow-hidden"
+        style={{
+          background: 'linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(139,92,246,0.08) 100%)',
+          border: '1px solid rgba(99,102,241,0.3)',
+          boxShadow: '0 0 40px rgba(99,102,241,0.08)',
+        }}
       >
-        <div>
-          <h2 className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>Ready to practice?</h2>
-          <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-            Choose Easy, Medium, or Hard and take a full adaptive SAT simulation.
+        {/* Background glow */}
+        <div
+          className="absolute pointer-events-none"
+          style={{
+            width: 200, height: 200, right: -40, top: -60,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%)',
+            filter: 'blur(20px)',
+          }}
+        />
+        <div className="relative">
+          <h2 className="font-bold text-xl mb-1" style={{ color: 'var(--text-primary)' }}>
+            Pronto para praticar?
+          </h2>
+          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+            Escolha Fácil, Médio ou Difícil e faça um simulado SAT completo e adaptativo.
           </p>
         </div>
         <button
           onClick={() => navigate('/simulados')}
-          className="px-6 py-3 rounded-xl font-semibold whitespace-nowrap ml-4"
-          style={{ background: 'var(--accent)', color: '#fff' }}
+          className="px-6 py-3 rounded-xl font-bold whitespace-nowrap ml-4 shrink-0 transition-all hover:opacity-90"
+          style={{
+            background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%)',
+            color: '#fff',
+            boxShadow: '0 4px 20px var(--accent-glow)',
+          }}
         >
-          Start Test →
+          Iniciar Teste →
         </button>
       </div>
 
       {/* Charts */}
       {completed.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          {/* Score evolution */}
           <div
-            className="rounded-xl p-5"
-            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+            className="rounded-2xl p-5"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glow)' }}
           >
-            <h3 className="font-semibold mb-4 text-sm" style={{ color: 'var(--text-primary)' }}>
-              Score Evolution
+            <h3 className="font-bold mb-4 text-sm" style={{ color: 'var(--text-primary)' }}>
+              Evolução de Pontuação
             </h3>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={lineData}>
@@ -177,67 +224,84 @@ export function DashboardPage() {
                 <XAxis dataKey="name" tick={{ fill: textColor, fontSize: 11 }} />
                 <YAxis domain={[400, 1600]} tick={{ fill: textColor, fontSize: 11 }} />
                 <Tooltip
-                  contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 8 }}
-                  labelStyle={{ color: 'var(--text-primary)' }}
+                  contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glow)', borderRadius: 10 }}
+                  labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
                   itemStyle={{ color: 'var(--text-secondary)' }}
                 />
                 <Legend wrapperStyle={{ fontSize: 11 }} />
-                <Line type="monotone" dataKey="Total" stroke="#4f7cff" strokeWidth={2} dot={{ r: 4 }} />
-                <Line type="monotone" dataKey="RW" stroke="#34d399" strokeWidth={1.5} strokeDasharray="4 2" dot={false} />
-                <Line type="monotone" dataKey="Math" stroke="#fbbf24" strokeWidth={1.5} strokeDasharray="4 2" dot={false} />
+                <Line type="monotone" dataKey="Total" stroke="#6366f1" strokeWidth={2.5} dot={{ r: 4, fill: '#6366f1' }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="RW" stroke="#10f0a0" strokeWidth={1.5} strokeDasharray="4 2" dot={false} />
+                <Line type="monotone" dataKey="Math" stroke="#f9d423" strokeWidth={1.5} strokeDasharray="4 2" dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
 
-          {/* Domain radar */}
           <div
-            className="rounded-xl p-5"
-            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+            className="rounded-2xl p-5"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glow)' }}
           >
-            <h3 className="font-semibold mb-4 text-sm" style={{ color: 'var(--text-primary)' }}>
-              Performance by Domain (% correct)
+            <h3 className="font-bold mb-4 text-sm" style={{ color: 'var(--text-primary)' }}>
+              Desempenho por Domínio (% acerto)
             </h3>
             <ResponsiveContainer width="100%" height={200}>
               <RadarChart data={radarData}>
                 <PolarGrid stroke={gridColor} />
                 <PolarAngleAxis dataKey="domain" tick={{ fill: textColor, fontSize: 10 }} />
-                <Radar name="Accuracy %" dataKey="pct" stroke="#4f7cff" fill="#4f7cff" fillOpacity={0.3} />
+                <Radar name="Acurácia %" dataKey="pct" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.25} />
               </RadarChart>
             </ResponsiveContainer>
           </div>
         </div>
       ) : (
         <div
-          className="rounded-xl p-8 mb-8 text-center"
-          style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+          className="rounded-2xl p-10 mb-8 text-center"
+          style={{ background: 'var(--bg-card)', border: '1px dashed var(--border-glow)' }}
         >
+          <div className="text-4xl mb-3">📈</div>
+          <p className="font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Nenhum dado ainda</p>
           <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Complete your first test to see charts and domain analysis here.
+            Complete seu primeiro teste para ver gráficos e análise de domínios aqui.
           </p>
         </div>
       )}
 
-      {/* Insights */}
+      {/* Domain insights */}
       {(weakest || strongest) && completed.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {strongest && (
             <div
-              className="rounded-xl p-4"
-              style={{ background: 'color-mix(in srgb, var(--success) 8%, var(--bg-card))', border: '1px solid color-mix(in srgb, var(--success) 30%, var(--border))' }}
+              className="rounded-2xl p-4 flex items-center gap-3"
+              style={{
+                background: 'rgba(16,240,160,0.06)',
+                border: '1px solid rgba(16,240,160,0.25)',
+              }}
             >
-              <div className="text-xs font-semibold mb-1" style={{ color: 'var(--success)' }}>Strongest Domain</div>
-              <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>{strongest.domain}</div>
-              <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>{strongest.pct}% correct</div>
+              <div className="text-2xl">🏅</div>
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wide mb-0.5" style={{ color: 'var(--success)' }}>
+                  Ponto Forte
+                </div>
+                <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>{strongest.domain}</div>
+                <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>{strongest.pct}% de acerto</div>
+              </div>
             </div>
           )}
           {weakest && (
             <div
-              className="rounded-xl p-4"
-              style={{ background: 'color-mix(in srgb, var(--danger) 8%, var(--bg-card))', border: '1px solid color-mix(in srgb, var(--danger) 30%, var(--border))' }}
+              className="rounded-2xl p-4 flex items-center gap-3"
+              style={{
+                background: 'rgba(255,77,109,0.06)',
+                border: '1px solid rgba(255,77,109,0.25)',
+              }}
             >
-              <div className="text-xs font-semibold mb-1" style={{ color: 'var(--danger)' }}>Needs Improvement</div>
-              <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>{weakest.domain}</div>
-              <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>{weakest.pct}% correct — focus here</div>
+              <div className="text-2xl">🎯</div>
+              <div>
+                <div className="text-xs font-bold uppercase tracking-wide mb-0.5" style={{ color: 'var(--danger)' }}>
+                  Precisa Melhorar
+                </div>
+                <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>{weakest.domain}</div>
+                <div className="text-sm" style={{ color: 'var(--text-secondary)' }}>{weakest.pct}% de acerto — foque aqui</div>
+              </div>
             </div>
           )}
         </div>

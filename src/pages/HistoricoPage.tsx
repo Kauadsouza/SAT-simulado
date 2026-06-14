@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
 import { useAppStore } from '../store/appStore';
 import { db } from '../db/index';
@@ -28,8 +28,8 @@ function domainStats(sessions: ExamSession[]) {
 
 function SessionDetail({ session, onBack }: { session: ExamSession; onBack: () => void }) {
   const { theme } = useAppStore();
-  const textColor = theme === 'dark' ? '#8b90a7' : '#6b7280';
-  const gridColor = theme === 'dark' ? '#2d3148' : '#dde1ef';
+  const textColor = theme === 'dark' ? '#7b82a8' : '#6b7280';
+  const gridColor = theme === 'dark' ? '#1e2440' : '#dde2f5';
 
   const domainMap = domainStats([session]);
   const barData = Object.entries(domainMap).map(([domain, { correct, total }]) => ({
@@ -44,38 +44,56 @@ function SessionDetail({ session, onBack }: { session: ExamSession; onBack: () =
     <div>
       <button
         onClick={onBack}
-        className="flex items-center gap-1.5 mb-5 text-sm transition-colors"
+        className="flex items-center gap-1.5 mb-5 text-sm font-semibold transition-opacity hover:opacity-70"
         style={{ color: 'var(--accent)' }}
       >
-        ← Back to history
+        ← Voltar ao histórico
       </button>
 
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
-            {TIER_LABELS[session.mode]} Test
+          <h2
+            className="text-2xl font-black tracking-tight"
+            style={{
+              background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            {TIER_LABELS[session.mode]}
           </h2>
           <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>
-            {new Date(session.completedAt ?? session.startedAt).toLocaleString()}
+            {new Date(session.completedAt ?? session.startedAt).toLocaleString('pt-BR')}
           </p>
         </div>
         <div className="text-right">
-          <div className="text-3xl font-bold" style={{ color: 'var(--accent)' }}>
+          <div
+            className="text-4xl font-black"
+            style={{
+              background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
             {session.totalScaled}
           </div>
-          <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>
-            RW: {session.rwScaled} · Math: {session.mathScaled}
+          <div className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+            RW: <strong style={{ color: 'var(--success)' }}>{session.rwScaled}</strong>
+            {' · '}
+            Math: <strong style={{ color: 'var(--warning)' }}>{session.mathScaled}</strong>
           </div>
         </div>
       </div>
 
       {/* Domain bar chart */}
       <div
-        className="rounded-xl p-5 mb-6"
-        style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+        className="rounded-2xl p-5 mb-6"
+        style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glow)' }}
       >
-        <h3 className="font-semibold mb-4 text-sm" style={{ color: 'var(--text-primary)' }}>
-          Performance by Domain
+        <h3 className="font-bold mb-4 text-sm" style={{ color: 'var(--text-primary)' }}>
+          Desempenho por Domínio
         </h3>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={barData}>
@@ -84,11 +102,18 @@ function SessionDetail({ session, onBack }: { session: ExamSession; onBack: () =
             <YAxis domain={[0, 100]} tick={{ fill: textColor, fontSize: 11 }} unit="%" />
             <Tooltip
               formatter={(val, _name, props) => [`${val}% (${props.payload.correct}/${props.payload.total})`, props.payload.fullName]}
-              contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 8 }}
-              labelStyle={{ color: 'var(--text-primary)' }}
+              contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glow)', borderRadius: 10 }}
+              labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
               itemStyle={{ color: 'var(--text-secondary)' }}
             />
-            <Bar dataKey="pct" name="Accuracy" fill="#4f7cff" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="pct" name="Acurácia" radius={[6, 6, 0, 0]}>
+              {barData.map((entry, i) => (
+                <Cell
+                  key={i}
+                  fill={entry.pct >= 70 ? '#10f0a0' : entry.pct >= 50 ? '#f9d423' : '#ff4d6d'}
+                />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </div>
@@ -98,12 +123,20 @@ function SessionDetail({ session, onBack }: { session: ExamSession; onBack: () =
         {Object.entries(session.modules).map(([id, mod]) => {
           if (!mod) return null;
           const dur = mod.endTime && mod.startTime ? Math.round((mod.endTime - mod.startTime) / 60000) : null;
+          const pct = mod.totalCount > 0 ? Math.round((mod.correctCount / mod.totalCount) * 100) : 0;
           return (
-            <div key={id} className="rounded-xl p-3 text-center" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
-              <div className="text-xs font-semibold mb-1" style={{ color: 'var(--text-secondary)' }}>
-                {id.toUpperCase()}
+            <div
+              key={id}
+              className="rounded-2xl p-3 text-center"
+              style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glow)' }}
+            >
+              <div className="text-xs font-bold uppercase tracking-wide mb-1" style={{ color: 'var(--text-secondary)' }}>
+                {id.replace(/_/g, ' ')}
               </div>
-              <div className="font-bold" style={{ color: 'var(--text-primary)' }}>
+              <div
+                className="font-black text-lg"
+                style={{ color: pct >= 70 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)' }}
+              >
                 {mod.correctCount}/{mod.totalCount}
               </div>
               <div className="text-xs" style={{ color: 'var(--text-secondary)' }}>
@@ -114,17 +147,20 @@ function SessionDetail({ session, onBack }: { session: ExamSession; onBack: () =
         })}
       </div>
 
-      {/* Question-by-question review */}
+      {/* Question review */}
       <div>
-        <h3 className="font-semibold mb-3 text-sm" style={{ color: 'var(--text-primary)' }}>
-          Question Review
+        <h3 className="font-bold mb-3 text-sm" style={{ color: 'var(--text-primary)' }}>
+          Revisão por Questão
         </h3>
         {Object.entries(session.modules).map(([moduleId, mod]) => {
           if (!mod) return null;
           return (
             <div key={moduleId} className="mb-6">
-              <h4 className="text-xs font-semibold mb-3 uppercase tracking-wide" style={{ color: 'var(--text-secondary)' }}>
-                {moduleId} — {mod.questions.length} questions
+              <h4
+                className="text-xs font-bold mb-3 uppercase tracking-widest"
+                style={{ color: 'var(--text-secondary)' }}
+              >
+                {moduleId.replace(/_/g, ' ')} — {mod.questions.length} questões
               </h4>
               <div className="space-y-3">
                 {mod.questions.map((q, i) => {
@@ -133,10 +169,11 @@ function SessionDetail({ session, onBack }: { session: ExamSession; onBack: () =
                   return (
                     <div
                       key={q.id}
-                      className="rounded-xl p-4"
+                      className="rounded-2xl p-4"
                       style={{
                         background: 'var(--bg-card)',
-                        border: `1px solid ${correct ? 'color-mix(in srgb, var(--success) 40%, var(--border))' : 'color-mix(in srgb, var(--danger) 40%, var(--border))'}`,
+                        border: `1px solid ${correct ? 'rgba(16,240,160,0.25)' : 'rgba(255,77,109,0.25)'}`,
+                        boxShadow: correct ? '0 0 10px rgba(16,240,160,0.04)' : '0 0 10px rgba(255,77,109,0.04)',
                       }}
                     >
                       <div className="flex items-start justify-between gap-4 mb-2">
@@ -146,11 +183,11 @@ function SessionDetail({ session, onBack }: { session: ExamSession; onBack: () =
                         <span
                           className="text-xs font-bold px-2 py-0.5 rounded-full shrink-0"
                           style={{
-                            background: correct ? 'color-mix(in srgb, var(--success) 20%, transparent)' : 'color-mix(in srgb, var(--danger) 20%, transparent)',
+                            background: correct ? 'rgba(16,240,160,0.12)' : 'rgba(255,77,109,0.12)',
                             color: correct ? 'var(--success)' : 'var(--danger)',
                           }}
                         >
-                          {correct ? '✓ Correct' : '✗ Wrong'}
+                          {correct ? '✓ Correto' : '✗ Errado'}
                         </span>
                       </div>
 
@@ -166,22 +203,26 @@ function SessionDetail({ session, onBack }: { session: ExamSession; onBack: () =
 
                       <div className="flex gap-4 text-xs">
                         <span style={{ color: 'var(--text-secondary)' }}>
-                          Your answer: <strong style={{ color: s.selectedAnswer ? (correct ? 'var(--success)' : 'var(--danger)') : 'var(--text-secondary)' }}>
-                            {s.selectedAnswer ?? '(blank)'}
+                          Sua resposta:{' '}
+                          <strong style={{ color: s.selectedAnswer ? (correct ? 'var(--success)' : 'var(--danger)') : 'var(--text-secondary)' }}>
+                            {s.selectedAnswer ?? '(em branco)'}
                           </strong>
                         </span>
                         {!correct && (
                           <span style={{ color: 'var(--text-secondary)' }}>
-                            Correct: <strong style={{ color: 'var(--success)' }}>{q.answer}</strong>
+                            Correta: <strong style={{ color: 'var(--success)' }}>{q.answer}</strong>
                           </span>
                         )}
                       </div>
 
                       <details className="mt-2">
-                        <summary className="text-xs cursor-pointer" style={{ color: 'var(--accent)' }}>
-                          Show explanation
+                        <summary
+                          className="text-xs cursor-pointer font-semibold"
+                          style={{ color: 'var(--accent)' }}
+                        >
+                          Ver explicação
                         </summary>
-                        <p className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
+                        <p className="text-xs mt-1.5 leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                           {q.explanation}
                         </p>
                       </details>
@@ -202,8 +243,8 @@ export function HistoricoPage() {
   const [sessions, setSessions] = useState<ExamSession[]>([]);
   const [selected, setSelected] = useState<ExamSession | null>(null);
 
-  const textColor = theme === 'dark' ? '#8b90a7' : '#6b7280';
-  const gridColor = theme === 'dark' ? '#2d3148' : '#dde1ef';
+  const textColor = theme === 'dark' ? '#7b82a8' : '#6b7280';
+  const gridColor = theme === 'dark' ? '#1e2440' : '#dde2f5';
 
   useEffect(() => {
     if (!user) return;
@@ -220,7 +261,6 @@ export function HistoricoPage() {
       });
   }, [user]);
 
-  // Aggregate domain stats
   const domainAgg = domainStats(sessions);
   const barData = Object.entries(domainAgg).map(([domain, { correct, total }]) => ({
     name: DOMAIN_LABELS[domain]?.split(' ')[0] ?? domain,
@@ -230,47 +270,75 @@ export function HistoricoPage() {
     pct: total > 0 ? Math.round((correct / total) * 100) : 0,
   }));
 
+  const TIER_ICONS: Record<string, string> = { easy: '🌱', medium: '⚡', hard: '🔥' };
+  const SCORE_COLOR = (total: number) => {
+    if (total >= 1400) return 'var(--success)';
+    if (total >= 1200) return 'var(--warning)';
+    return 'var(--danger)';
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
       {selected ? (
         <SessionDetail session={selected} onBack={() => setSelected(null)} />
       ) : (
         <>
-          <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
-            History
-          </h1>
-          <p className="text-sm mb-8" style={{ color: 'var(--text-secondary)' }}>
-            All completed tests for {user?.name}.
-          </p>
+          <div className="mb-8">
+            <h1
+              className="text-3xl font-black tracking-tight mb-1"
+              style={{
+                background: 'linear-gradient(135deg, var(--text-primary) 0%, var(--purple) 60%, var(--cyan) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
+              Histórico
+            </h1>
+            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+              Todos os testes concluídos por {user?.name}.
+            </p>
+          </div>
 
           {sessions.length === 0 ? (
             <div
-              className="rounded-xl p-10 text-center"
-              style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+              className="rounded-2xl p-10 text-center"
+              style={{ background: 'var(--bg-card)', border: '1px dashed var(--border-glow)' }}
             >
-              <p style={{ color: 'var(--text-secondary)' }}>No completed tests yet. Take your first test!</p>
+              <div className="text-4xl mb-3">📋</div>
+              <p className="font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>Nenhum teste concluído</p>
+              <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                Faça seu primeiro teste para ver o histórico aqui.
+              </p>
             </div>
           ) : (
             <>
-              {/* Aggregate domain performance */}
+              {/* Aggregate chart */}
               <div
-                className="rounded-xl p-5 mb-6"
-                style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+                className="rounded-2xl p-5 mb-6"
+                style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glow)' }}
               >
-                <h3 className="font-semibold mb-4 text-sm" style={{ color: 'var(--text-primary)' }}>
-                  Aggregate Domain Performance
+                <h3 className="font-bold mb-4 text-sm" style={{ color: 'var(--text-primary)' }}>
+                  Desempenho Agregado por Domínio
                 </h3>
-                <ResponsiveContainer width="100%" height={180}>
+                <ResponsiveContainer width="100%" height={200}>
                   <BarChart data={barData} layout="vertical">
                     <CartesianGrid strokeDasharray="3 3" stroke={gridColor} horizontal={false} />
                     <XAxis type="number" domain={[0, 100]} tick={{ fill: textColor, fontSize: 11 }} unit="%" />
-                    <YAxis type="category" dataKey="name" tick={{ fill: textColor, fontSize: 11 }} width={80} />
+                    <YAxis type="category" dataKey="name" tick={{ fill: textColor, fontSize: 11 }} width={90} />
                     <Tooltip
                       formatter={(val, _n, props) => [`${val}% (${props.payload.correct}/${props.payload.total})`, props.payload.fullName]}
-                      contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 8 }}
-                      labelStyle={{ color: 'var(--text-primary)' }}
+                      contentStyle={{ background: 'var(--bg-secondary)', border: '1px solid var(--border-glow)', borderRadius: 10 }}
+                      labelStyle={{ color: 'var(--text-primary)', fontWeight: 600 }}
                     />
-                    <Bar dataKey="pct" name="Accuracy" fill="#4f7cff" radius={[0, 4, 4, 0]} />
+                    <Bar dataKey="pct" name="Acurácia" radius={[0, 6, 6, 0]}>
+                      {barData.map((entry, i) => (
+                        <Cell
+                          key={i}
+                          fill={entry.pct >= 70 ? '#10f0a0' : entry.pct >= 50 ? '#f9d423' : '#ff4d6d'}
+                        />
+                      ))}
+                    </Bar>
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -281,19 +349,33 @@ export function HistoricoPage() {
                   <button
                     key={s.id}
                     onClick={() => setSelected(s)}
-                    className="w-full rounded-xl p-4 flex items-center justify-between text-left transition-all hover:opacity-90"
-                    style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}
+                    className="w-full rounded-2xl p-4 flex items-center justify-between text-left card-hover"
+                    style={{
+                      background: 'var(--bg-card)',
+                      border: '1px solid var(--border-glow)',
+                    }}
                   >
-                    <div>
-                      <div className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>
-                        {TIER_LABELS[s.mode]} — {new Date(s.completedAt ?? s.startedAt).toLocaleDateString()}
+                    <div className="flex items-center gap-3">
+                      <div
+                        className="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0"
+                        style={{ background: 'var(--bg-secondary)' }}
+                      >
+                        {TIER_ICONS[s.mode] ?? '📝'}
                       </div>
-                      <div className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
-                        RW: {s.rwScaled} · Math: {s.mathScaled} · {new Date(s.completedAt ?? s.startedAt).toLocaleTimeString()}
+                      <div>
+                        <div className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>
+                          {TIER_LABELS[s.mode]} — {new Date(s.completedAt ?? s.startedAt).toLocaleDateString('pt-BR')}
+                        </div>
+                        <div className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>
+                          RW: {s.rwScaled}  ·  Math: {s.mathScaled}  ·  {new Date(s.completedAt ?? s.startedAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="text-2xl font-bold" style={{ color: 'var(--accent)' }}>
+                      <div
+                        className="text-2xl font-black"
+                        style={{ color: SCORE_COLOR(s.totalScaled ?? 0) }}
+                      >
                         {s.totalScaled}
                       </div>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--text-secondary)' }}>
