@@ -146,18 +146,20 @@ function ResultsScreen() {
   const total = session.totalScaled ?? 0;
 
   const allModules = Object.values(session.modules);
-  const domainMap: Record<string, { correct: number; total: number }> = {};
+  const domainMap: Record<string, { correct: number; total: number; dontKnow: number }> = {};
   for (const mod of allModules) {
     if (!mod) continue;
     for (let i = 0; i < mod.questions.length; i++) {
       const q = mod.questions[i];
       const s = mod.states[i];
       const domain = q.domain;
-      if (!domainMap[domain]) domainMap[domain] = { correct: 0, total: 0 };
+      if (!domainMap[domain]) domainMap[domain] = { correct: 0, total: 0, dontKnow: 0 };
       domainMap[domain].total++;
       if (gradeAnswer(q.type, s.selectedAnswer, q.answer)) domainMap[domain].correct++;
+      if (s.dontKnow) domainMap[domain].dontKnow++;
     }
   }
+  const totalDontKnow = Object.values(domainMap).reduce((a, b) => a + b.dontKnow, 0);
 
   const scoreColor = total >= 1400 ? 'var(--success)' : total >= 1200 ? 'var(--warning)' : 'var(--danger)';
 
@@ -224,21 +226,28 @@ function ResultsScreen() {
 
         {/* Domain breakdown */}
         <div
-          className="rounded-2xl p-5 mb-6"
+          className="rounded-2xl p-5 mb-4"
           style={{ background: 'var(--bg-card)', border: '1px solid var(--border-glow)' }}
         >
           <h3 className="font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
             Desempenho por Domínio
           </h3>
           <div className="space-y-3">
-            {Object.entries(domainMap).map(([domain, { correct, total: tot }]) => {
+            {Object.entries(domainMap).map(([domain, { correct, total: tot, dontKnow }]) => {
               const pct = tot > 0 ? Math.round((correct / tot) * 100) : 0;
               const barColor = pct >= 70 ? 'var(--success)' : pct >= 50 ? 'var(--warning)' : 'var(--danger)';
               return (
                 <div key={domain}>
                   <div className="flex justify-between text-sm mb-1">
                     <span style={{ color: 'var(--text-primary)' }}>{DOMAIN_LABELS[domain] ?? domain}</span>
-                    <span style={{ color: 'var(--text-secondary)' }}>{correct}/{tot} ({pct}%)</span>
+                    <div className="flex items-center gap-2">
+                      {dontKnow > 0 && (
+                        <span style={{ fontSize: '0.72rem', color: 'var(--danger)', fontWeight: 600 }}>
+                          ❓{dontKnow}
+                        </span>
+                      )}
+                      <span style={{ color: 'var(--text-secondary)' }}>{correct}/{tot} ({pct}%)</span>
+                    </div>
                   </div>
                   <div className="h-2 rounded-full" style={{ background: 'var(--border-glow)' }}>
                     <div
@@ -251,6 +260,43 @@ function ResultsScreen() {
             })}
           </div>
         </div>
+
+        {/* "Não sei" analysis — only if user used the feature */}
+        {totalDontKnow > 0 && (
+          <div
+            className="rounded-2xl p-5 mb-6"
+            style={{
+              background: 'rgba(255,77,109,0.06)',
+              border: '1px solid rgba(255,77,109,0.25)',
+            }}
+          >
+            <h3 className="font-bold mb-1" style={{ color: '#ff4d6d' }}>
+              ❓ Questões que você não sabia: {totalDontKnow}
+            </h3>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', marginBottom: 12 }}>
+              Esses tópicos precisam de mais atenção nos seus estudos.
+            </p>
+            <div className="space-y-2">
+              {Object.entries(domainMap)
+                .filter(([, v]) => v.dontKnow > 0)
+                .sort((a, b) => b[1].dontKnow - a[1].dontKnow)
+                .map(([domain, { dontKnow, total: tot }]) => (
+                  <div key={domain} className="flex items-center justify-between">
+                    <span style={{ fontSize: '0.82rem', color: 'var(--text-primary)' }}>
+                      {DOMAIN_LABELS[domain] ?? domain}
+                    </span>
+                    <span style={{
+                      fontSize: '0.78rem', fontWeight: 700, padding: '2px 8px', borderRadius: 6,
+                      background: 'rgba(255,77,109,0.12)', color: '#ff4d6d',
+                      border: '1px solid rgba(255,77,109,0.25)',
+                    }}>
+                      {dontKnow}/{tot}
+                    </span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
 
         <div className="flex gap-3">
           <button
@@ -286,6 +332,7 @@ export function ExamPage() {
     setCurrentQuestion,
     setAnswer,
     toggleMarkForReview,
+    setDontKnow,
     toggleEliminate,
     completeCurrentModule,
     getCurrentModuleQuestions,
@@ -411,24 +458,48 @@ export function ExamPage() {
       {/* ─── Content Area ────────────────────────────────────────────── */}
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
-          {/* Question number + mark */}
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-semibold" style={{ color: 'var(--text-secondary)' }}>
+          {/* Question number + mark + don't know */}
+          <div className="flex items-center justify-between mb-4 gap-2">
+            <span className="text-sm font-semibold shrink-0" style={{ color: 'var(--text-secondary)' }}>
               Questão {currentQuestionIndex + 1} de {totalQ}
             </span>
-            <button
-              onClick={() => toggleMarkForReview(question.id)}
-              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl transition-all"
-              style={{
-                background: state.markedForReview ? 'rgba(249,212,35,0.12)' : 'var(--bg-card)',
-                border: `1px solid ${state.markedForReview ? 'rgba(249,212,35,0.5)' : 'var(--border-glow)'}`,
-                color: state.markedForReview ? 'var(--warning)' : 'var(--text-secondary)',
-                boxShadow: state.markedForReview ? '0 0 10px rgba(249,212,35,0.15)' : 'none',
-              }}
-            >
-              <BookmarkIcon filled={state.markedForReview} />
-              Marcar para Revisão
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => toggleMarkForReview(question.id)}
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl transition-all"
+                style={{
+                  background: state.markedForReview ? 'rgba(249,212,35,0.12)' : 'var(--bg-card)',
+                  border: `1px solid ${state.markedForReview ? 'rgba(249,212,35,0.5)' : 'var(--border-glow)'}`,
+                  color: state.markedForReview ? 'var(--warning)' : 'var(--text-secondary)',
+                  boxShadow: state.markedForReview ? '0 0 10px rgba(249,212,35,0.15)' : 'none',
+                }}
+              >
+                <BookmarkIcon filled={state.markedForReview} />
+                <span className="hidden sm:inline">Marcar para Revisão</span>
+                <span className="sm:hidden">Revisão</span>
+              </button>
+              <button
+                onClick={() => {
+                  setDontKnow(question.id);
+                  if (currentQuestionIndex < totalQ - 1) {
+                    setCurrentQuestion(currentQuestionIndex + 1);
+                  }
+                }}
+                className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl transition-all"
+                style={{
+                  background: state.dontKnow ? 'rgba(255,77,109,0.12)' : 'var(--bg-card)',
+                  border: `1px solid ${state.dontKnow ? 'rgba(255,77,109,0.5)' : 'var(--border-glow)'}`,
+                  color: state.dontKnow ? 'var(--danger)' : 'var(--text-secondary)',
+                  boxShadow: state.dontKnow ? '0 0 10px rgba(255,77,109,0.15)' : 'none',
+                }}
+                title="Não sei — pular esta questão"
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+                Não sei
+              </button>
+            </div>
           </div>
 
           {/* Passage */}

@@ -305,3 +305,6 @@ input:focus, textarea:focus {
 
 /* ─── Prevent horizontal overflow on mobile ─────────────────────── */
 body { overflow-x: hidden; }
+
+/* ─── Spinner ────────────────────────────────────────────────────── */
+@keyframes spin { to { transform: rotate(360deg); } }

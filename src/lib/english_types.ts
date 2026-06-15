@@ -26,8 +26,9 @@ export interface Question {
 
 export interface PlacementAnswer {
   questionId: string;
-  chosenIndex: number;
+  chosenIndex: number; // -1 when user clicked "Não sei"
   correct: boolean;
+  dontKnow?: boolean;
 }
 
 export interface PlacementResult {

@@ -68,6 +68,7 @@ export interface QuestionState {
   questionId: string;
   selectedAnswer: string | null; // "A"|"B"|"C"|"D" or typed string for SPR
   markedForReview: boolean;
+  dontKnow?: boolean;             // user flagged "Não sei"
   eliminated: boolean[];          // per choice (length 4, all false for SPR)
   highlighted: number[][];        // passage highlight ranges [start, end]
   timeSpentSec: number;

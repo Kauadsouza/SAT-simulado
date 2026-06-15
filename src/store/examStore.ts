@@ -29,6 +29,7 @@ interface ExamStore {
   advancePhase: () => Promise<void>;
   setAnswer: (questionId: string, answer: string) => void;
   toggleMarkForReview: (questionId: string) => void;
+  setDontKnow: (questionId: string) => void;
   toggleEliminate: (questionId: string, choiceIndex: number) => void;
   toggleHighlight: (questionId: string, start: number, end: number) => void;
   setCurrentQuestion: (index: number) => void;
@@ -314,6 +315,27 @@ export const useExamStore = create<ExamStore>((set, get) => ({
           ...module,
           states: module.states.map((s) =>
             s.questionId === questionId ? { ...s, markedForReview: !s.markedForReview } : s
+          ),
+        },
+      },
+    };
+    set({ session: updated });
+    db.sessions.put(updated);
+  },
+
+  setDontKnow: (questionId) => {
+    const { session, currentModuleId } = get();
+    if (!session || !currentModuleId) return;
+    const module = session.modules[currentModuleId];
+    if (!module) return;
+    const updated = {
+      ...session,
+      modules: {
+        ...session.modules,
+        [currentModuleId]: {
+          ...module,
+          states: module.states.map((s) =>
+            s.questionId === questionId ? { ...s, dontKnow: true, selectedAnswer: null } : s
           ),
         },
       },

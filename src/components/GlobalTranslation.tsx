@@ -6,6 +6,7 @@ interface ContextMenu {
   y: number;
   word: string;
   translation: string | null;
+  loading: boolean;
 }
 
 function getWordAtPoint(x: number, y: number): string {
@@ -37,6 +38,23 @@ function getWordAtPoint(x: number, y: number): string {
   return range.toString().trim();
 }
 
+async function fetchOnlineTranslation(word: string): Promise<string | null> {
+  try {
+    const res = await fetch(
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(word)}&langpair=en|pt-BR`
+    );
+    const data = await res.json();
+    const translated: string = data?.responseData?.translatedText ?? '';
+    // Discard if the API just echoed back the same word (case-insensitive)
+    if (!translated || translated.toLowerCase().trim() === word.toLowerCase().trim()) return null;
+    // Discard obvious error messages from the API
+    if (translated.startsWith('PLEASE SELECT') || translated.startsWith('NO QUERY')) return null;
+    return translated;
+  } catch {
+    return null;
+  }
+}
+
 export function GlobalTranslation() {
   const [menu, setMenu] = useState<ContextMenu | null>(null);
   const [copied, setCopied] = useState(false);
@@ -61,8 +79,19 @@ export function GlobalTranslation() {
       if (x + 260 > vw) x = e.clientX - 268;
       if (y + 220 > vh) y = e.clientY - 220;
 
-      setMenu({ x, y, word, translation });
+      setMenu({ x, y, word, translation, loading: !translation });
       setCopied(false);
+
+      // If not in local dict, fetch online translation
+      if (!translation) {
+        const wordSnapshot = word;
+        fetchOnlineTranslation(wordSnapshot).then((online) => {
+          setMenu((prev) => {
+            if (!prev || prev.word !== wordSnapshot) return prev;
+            return { ...prev, translation: online, loading: false };
+          });
+        });
+      }
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
@@ -120,9 +149,22 @@ export function GlobalTranslation() {
             <div className="ctx-label">Português</div>
             <div className="ctx-translation">{menu.translation}</div>
           </>
+        ) : menu.loading ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--text-secondary)', fontSize: '0.82rem' }}>
+            <div
+              style={{
+                width: 14, height: 14, borderRadius: '50%',
+                border: '2px solid var(--border-glow)',
+                borderTopColor: 'var(--accent)',
+                animation: 'spin 0.7s linear infinite',
+                flexShrink: 0,
+              }}
+            />
+            Traduzindo...
+          </div>
         ) : (
           <div className="ctx-no-result">
-            Palavra não encontrada no dicionário local.
+            Tradução não encontrada.
           </div>
         )}
       </div>
