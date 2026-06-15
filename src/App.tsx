@@ -7,6 +7,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { SimuladosPage } from './pages/SimuladosPage';
 import { HistoricoPage } from './pages/HistoricoPage';
 import { ExamPage } from './pages/ExamPage';
+import { EnglishPage } from './pages/EnglishPage';
 import { GlobalTranslation } from './components/GlobalTranslation';
 
 function ThemeSync() {
@@ -39,6 +40,7 @@ export default function App() {
           <Route path="/"          element={<DashboardPage />} />
           <Route path="/simulados" element={<SimuladosPage />} />
           <Route path="/historico" element={<HistoricoPage />} />
+          <Route path="/ingles"    element={<EnglishPage />} />
         </Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
