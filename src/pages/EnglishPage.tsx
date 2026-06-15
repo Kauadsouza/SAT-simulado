@@ -207,6 +207,22 @@ function PlacementTest({ onComplete }: { onComplete: (answers: PlacementAnswer[]
     }, 380);
   }
 
+  function handleDontKnow() {
+    if (selected !== null) return;
+    setSelected(-1);
+    const ans: PlacementAnswer = { questionId: q.id, chosenIndex: -1, correct: false, dontKnow: true };
+    const next = [...answers, ans];
+    setTimeout(() => {
+      if (qIdx + 1 < total) {
+        setAnswers(next);
+        setSelected(null);
+        setQIdx(qIdx + 1);
+      } else {
+        onComplete(next);
+      }
+    }, 200);
+  }
+
   return (
     <div className="flex-1 flex flex-col" style={{ minHeight: 0 }}>
       {/* Progress bar */}
@@ -258,7 +274,7 @@ function PlacementTest({ onComplete }: { onComplete: (answers: PlacementAnswer[]
             {q.prompt}
           </p>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-3 mb-4">
             {q.options.map((opt, i) => {
               const active = selected === i;
               return (
@@ -308,6 +324,34 @@ function PlacementTest({ onComplete }: { onComplete: (answers: PlacementAnswer[]
               );
             })}
           </div>
+
+          {/* Não sei — skip without answering */}
+          {selected === null && (
+            <button
+              onClick={handleDontKnow}
+              style={{
+                width: '100%',
+                padding: '11px',
+                borderRadius: 12,
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                background: 'rgba(255,77,109,0.07)',
+                border: '1px solid rgba(255,77,109,0.25)',
+                color: 'var(--danger)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 6,
+                transition: 'all 0.15s',
+              }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              Não sei — pular
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -769,6 +813,7 @@ function StudyLesson({
   const [selected, setSelected] = useState<number | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
+  const [dontKnowCount, setDontKnowCount] = useState(0);
   const [done, setDone] = useState(false);
 
   const q = questions[qIdx];
@@ -779,6 +824,13 @@ function StudyLesson({
     setSelected(i);
     setRevealed(true);
     if (i === q.correctIndex) setCorrectCount((n) => n + 1);
+  }
+
+  function handleDontKnow() {
+    if (selected !== null) return;
+    setSelected(-1); // -1 = "não sei"
+    setRevealed(true);
+    setDontKnowCount((n) => n + 1);
   }
 
   function handleNext() {
@@ -832,6 +884,19 @@ function StudyLesson({
               {Math.round(score * 100)}% de acerto
             </p>
           </div>
+
+          {/* dontKnow breakdown */}
+          {dontKnowCount > 0 && (
+            <div style={{
+              background: 'rgba(255,77,109,0.07)', border: '1px solid rgba(255,77,109,0.2)',
+              borderRadius: 10, padding: '10px 14px', marginBottom: 12,
+              fontSize: '0.82rem', color: 'var(--danger)',
+              display: 'flex', justifyContent: 'space-between',
+            }}>
+              <span>❓ Não sabia</span>
+              <span style={{ fontWeight: 700 }}>{dontKnowCount}/{total}</span>
+            </div>
+          )}
 
           {passed && (
             <div
@@ -957,12 +1022,14 @@ function StudyLesson({
               let bg = 'var(--bg-card)';
               let color = 'var(--text-primary)';
 
+              // selected === -1 means "Não sei" — only highlight correct, nothing red
+              const isDontKnow = selected === -1;
               if (revealed) {
                 if (isCorrect) {
                   borderColor = 'rgba(16,240,160,0.5)';
                   bg = 'rgba(16,240,160,0.08)';
                   color = '#10f0a0';
-                } else if (isSelected) {
+                } else if (isSelected && !isDontKnow) {
                   borderColor = 'rgba(255,77,109,0.5)';
                   bg = 'rgba(255,77,109,0.08)';
                   color = '#ff4d6d';
@@ -1026,7 +1093,7 @@ function StudyLesson({
                       fontWeight: 700,
                     }}
                   >
-                    {revealed && isCorrect ? '✓' : revealed && isSelected && !isCorrect ? '✗' : String.fromCharCode(65 + i)}
+                    {revealed && isCorrect ? '✓' : revealed && isSelected && !isCorrect && !isDontKnow ? '✗' : String.fromCharCode(65 + i)}
                   </span>
                   {opt}
                 </button>
@@ -1034,12 +1101,41 @@ function StudyLesson({
             })}
           </div>
 
+          {/* Não sei button — only before answering */}
+          {!revealed && (
+            <button
+              onClick={handleDontKnow}
+              style={{
+                width: '100%',
+                padding: '11px',
+                borderRadius: 12,
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                background: 'rgba(255,77,109,0.07)',
+                border: '1px solid rgba(255,77,109,0.25)',
+                color: 'var(--danger)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 6,
+                marginBottom: 12,
+                transition: 'all 0.15s',
+              }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              Não sei — mostrar resposta
+            </button>
+          )}
+
           {/* Explanation */}
           {revealed && (
             <div
               style={{
-                background: selected === q.correctIndex ? 'rgba(16,240,160,0.08)' : 'rgba(255,77,109,0.08)',
-                border: `1px solid ${selected === q.correctIndex ? 'rgba(16,240,160,0.25)' : 'rgba(255,77,109,0.25)'}`,
+                background: selected === q.correctIndex ? 'rgba(16,240,160,0.08)' : selected === -1 ? 'rgba(99,102,241,0.08)' : 'rgba(255,77,109,0.08)',
+                border: `1px solid ${selected === q.correctIndex ? 'rgba(16,240,160,0.25)' : selected === -1 ? 'rgba(99,102,241,0.25)' : 'rgba(255,77,109,0.25)'}`,
                 borderRadius: 12,
                 padding: '12px 16px',
                 marginBottom: 16,
@@ -1051,12 +1147,17 @@ function StudyLesson({
               <span
                 style={{
                   fontWeight: 700,
-                  color: selected === q.correctIndex ? '#10f0a0' : '#ff4d6d',
+                  color: selected === q.correctIndex ? '#10f0a0' : selected === -1 ? 'var(--accent)' : '#ff4d6d',
                   marginRight: 6,
                 }}
               >
-                {selected === q.correctIndex ? '✓ Correto!' : '✗ Incorreto.'}
+                {selected === q.correctIndex ? '✓ Correto!' : selected === -1 ? '📖 Resposta correta:' : '✗ Incorreto.'}
               </span>
+              {selected === -1 && (
+                <span style={{ color: 'var(--text-primary)', fontWeight: 600, marginRight: 6 }}>
+                  {q.options[q.correctIndex]} —{' '}
+                </span>
+              )}
               {q.explanation}
             </div>
           )}
