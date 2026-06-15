@@ -1095,8 +1095,8 @@ export function EnglishPage() {
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!user?.id) return;
-    loadEnglishProgress(String(user.id)).then((p) => {
+    if (!user?.name) return;
+    loadEnglishProgress(user.name).then((p) => {
       setProgress(p);
       setScreen(p.placementCompleted ? 'study-dashboard' : 'placement-intro');
     });
@@ -1104,7 +1104,7 @@ export function EnglishPage() {
 
   const handlePlacementComplete = useCallback(
     async (answers: PlacementAnswer[]) => {
-      if (!user?.id) return;
+      if (!user?.name) return;
       const { level, perSkill } = calculatePlacementLevel(PLACEMENT_QUESTIONS, answers);
       const result: PlacementResult = {
         cefrLevel: level,
@@ -1113,7 +1113,7 @@ export function EnglishPage() {
         rawAnswers: answers,
       };
       setPlacementResult(result);
-      const updated = await savePlacementResult(String(user.id), result);
+      const updated = await savePlacementResult(user.name, result);
       setProgress(updated);
       setScreen('placement-result');
     },
@@ -1122,8 +1122,8 @@ export function EnglishPage() {
 
   const handleLessonComplete = useCallback(
     async (score: number) => {
-      if (!user?.id || !activeLessonId) return;
-      const updated = await completeLessonForUser(String(user.id), activeLessonId, score, XP_PER_LESSON);
+      if (!user?.name || !activeLessonId) return;
+      const updated = await completeLessonForUser(user.name, activeLessonId, score, XP_PER_LESSON);
       setProgress(updated);
       setActiveLessonId(null);
       setScreen('study-dashboard');
@@ -1132,8 +1132,8 @@ export function EnglishPage() {
   );
 
   const handleRetake = useCallback(async () => {
-    if (!user?.id) return;
-    const updated = await resetPlacement(String(user.id));
+    if (!user?.name) return;
+    const updated = await resetPlacement(user.name);
     setProgress(updated);
     setScreen('placement-intro');
   }, [user]);
