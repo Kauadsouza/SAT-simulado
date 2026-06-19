@@ -58,6 +58,15 @@ export async function completeLessonForUser(
   return progress;
 }
 
+/** Award XP and bump the daily streak — used by the vocab/listening/speaking trainers. */
+export async function addXpAndStreak(userId: string, xp: number): Promise<UserEnglishProgress> {
+  const progress = await loadEnglishProgress(userId);
+  progress.xp += Math.max(0, Math.round(xp));
+  progress.streak = updateStreak(progress.streak);
+  await saveEnglishProgress(progress);
+  return progress;
+}
+
 export async function resetPlacement(userId: string): Promise<UserEnglishProgress> {
   const progress = await loadEnglishProgress(userId);
   progress.placement = null;

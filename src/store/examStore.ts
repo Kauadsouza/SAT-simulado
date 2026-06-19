@@ -10,6 +10,7 @@ import type {
 } from '../lib/types';
 import { buildModule } from '../data/index';
 import { isRoutedDifficult, gradeAnswer, calcRWScaled, calcMathScaled } from '../lib/scoring';
+import { ingestExamSession } from '../lib/review_store';
 import { db } from '../db/index';
 
 // Simple UUID without the crypto module (browser-compatible)
@@ -235,6 +236,13 @@ export const useExamStore = create<ExamStore>((set, get) => ({
 
     // Persist
     await db.sessions.put(updatedSession);
+
+    // When the simulado finishes, feed every question into the mistake bank (SRS).
+    if (nextPhase === 'complete') {
+      ingestExamSession(updatedSession).catch((e) =>
+        console.error('Failed to ingest exam into mistake bank', e)
+      );
+    }
 
     set({
       session: updatedSession,

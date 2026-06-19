@@ -738,6 +738,222 @@ export const MATH_QUESTIONS: Question[] = [
       prompt_pt: 'Uma escada de 30 pés apoia-se em uma parede. A base da escada está a 18 pés da parede. A que altura da parede a escada alcança? (Arredonde para o pé mais próximo.)'
     }
   },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // EXPANSION BATCH 1 — +12 original questions (all domains, all difficulties)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // ─── ALGEBRA ───────────────────────────────────────────────────────────────
+  {
+    id: 'math-alg-m-201',
+    section: 'math',
+    domain: 'algebra',
+    skill: 'linear_equations',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: '',
+    prompt: 'If \\(3(x - 4) = 2x + 5\\), what is the value of \\(x\\)?',
+    choices: ['17', '7', '-7', '1'],
+    answer: 'A',
+    explanation: 'Distribute: \\(3x - 12 = 2x + 5\\). Subtract \\(2x\\): \\(x - 12 = 5\\). Add 12: \\(x = 17\\).',
+    translation: {
+      words: { value: 'valor' },
+      prompt_pt: 'Se \\(3(x - 4) = 2x + 5\\), qual é o valor de \\(x\\)?'
+    }
+  },
+  {
+    id: 'math-alg-m-202',
+    section: 'math',
+    domain: 'algebra',
+    skill: 'systems_linear',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: '',
+    prompt: 'If \\(2x + y = 11\\) and \\(x - y = 1\\), what is the value of \\(x\\)?',
+    choices: ['4', '3', '5', '7'],
+    answer: 'A',
+    explanation: 'Add the two equations to eliminate \\(y\\): \\(3x = 12\\), so \\(x = 4\\) (and \\(y = 3\\)).',
+    translation: {
+      words: { value: 'valor' },
+      prompt_pt: 'Se \\(2x + y = 11\\) e \\(x - y = 1\\), qual é o valor de \\(x\\)?'
+    }
+  },
+  {
+    id: 'math-alg-m-203',
+    section: 'math',
+    domain: 'algebra',
+    skill: 'linear_functions',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: '',
+    prompt: 'A line passes through the points \\((1, 4)\\) and \\((3, 10)\\). What is the slope of the line?',
+    choices: ['3', '2', '6', '\\(\\tfrac{1}{3}\\)'],
+    answer: 'A',
+    explanation: 'Slope \\(= \\dfrac{10 - 4}{3 - 1} = \\dfrac{6}{2} = 3\\).',
+    translation: {
+      words: { line: 'reta', points: 'pontos', slope: 'inclinação' },
+      prompt_pt: 'Uma reta passa pelos pontos \\((1, 4)\\) e \\((3, 10)\\). Qual é a inclinação (coeficiente angular) da reta?'
+    }
+  },
+  {
+    id: 'math-alg-h-201',
+    section: 'math',
+    domain: 'algebra',
+    skill: 'linear_inequalities',
+    difficulty: 'hard',
+    type: 'multiple_choice',
+    passage: '',
+    prompt: 'Which value of \\(x\\) is NOT a solution to the inequality \\(-2x + 7 \\le 1\\)?',
+    choices: ['2', '3', '5', '10'],
+    answer: 'A',
+    explanation: 'Solve: \\(-2x + 7 \\le 1 \\Rightarrow -2x \\le -6\\). Divide by \\(-2\\) and flip the sign: \\(x \\ge 3\\). So any \\(x \\ge 3\\) works; only \\(x = 2\\) is not a solution.',
+    translation: {
+      words: { value: 'valor', solution: 'solução', inequality: 'inequação' },
+      prompt_pt: 'Qual valor de \\(x\\) NÃO é solução da inequação \\(-2x + 7 \\le 1\\)?'
+    }
+  },
+
+  // ─── ADVANCED MATH ─────────────────────────────────────────────────────────
+  {
+    id: 'math-adv-m-201',
+    section: 'math',
+    domain: 'advanced_math',
+    skill: 'polynomial_functions',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: '',
+    prompt: 'Which of the following is equivalent to \\((x + 3)(x - 5)\\)?',
+    choices: ['\\(x^2 - 2x - 15\\)', '\\(x^2 + 2x - 15\\)', '\\(x^2 - 2x + 15\\)', '\\(x^2 - 15x - 2\\)'],
+    answer: 'A',
+    explanation: 'FOIL: \\(x\\cdot x + x\\cdot(-5) + 3\\cdot x + 3\\cdot(-5) = x^2 - 5x + 3x - 15 = x^2 - 2x - 15\\).',
+    translation: {
+      words: { equivalent: 'equivalente' },
+      prompt_pt: 'Qual das opções é equivalente a \\((x + 3)(x - 5)\\)?'
+    }
+  },
+  {
+    id: 'math-adv-m-202',
+    section: 'math',
+    domain: 'advanced_math',
+    skill: 'quadratic_functions',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: '',
+    prompt: 'The function \\(f(x) = (x - 2)(x + 6)\\). For what value of \\(x\\) does \\(f\\) reach its minimum?',
+    choices: ['-2', '2', '-6', '-4'],
+    answer: 'A',
+    explanation: 'The zeros are \\(x = 2\\) and \\(x = -6\\). The vertex lies on the axis of symmetry, midway between the zeros: \\(x = \\dfrac{2 + (-6)}{2} = -2\\).',
+    translation: {
+      words: { function: 'função', value: 'valor', minimum: 'mínimo' },
+      prompt_pt: 'A função \\(f(x) = (x - 2)(x + 6)\\). Para qual valor de \\(x\\) a função \\(f\\) atinge seu mínimo?'
+    }
+  },
+  {
+    id: 'math-adv-h-201',
+    section: 'math',
+    domain: 'advanced_math',
+    skill: 'exponential_functions',
+    difficulty: 'hard',
+    type: 'multiple_choice',
+    passage: '',
+    prompt: 'A population of bacteria doubles every 3 hours. If there are initially 500 bacteria, which expression gives the number of bacteria after \\(t\\) hours?',
+    choices: ['\\(500 \\cdot 2^{t/3}\\)', '\\(500 \\cdot 2^{3t}\\)', '\\(500 \\cdot 3^{t/2}\\)', '\\(500 + 2^{t/3}\\)'],
+    answer: 'A',
+    explanation: 'Doubling means base 2. The number of doublings in \\(t\\) hours is \\(t/3\\), so the count is \\(500 \\cdot 2^{t/3}\\). Option B doubles far too fast, C uses the wrong base, and D adds instead of multiplying.',
+    translation: {
+      words: { population: 'população', bacteria: 'bactérias', doubles: 'dobra', initially: 'inicialmente', expression: 'expressão' },
+      prompt_pt: 'Uma população de bactérias dobra a cada 3 horas. Se inicialmente há 500 bactérias, qual expressão dá o número de bactérias após \\(t\\) horas?'
+    }
+  },
+  {
+    id: 'math-adv-h-202',
+    section: 'math',
+    domain: 'advanced_math',
+    skill: 'quadratic_functions',
+    difficulty: 'hard',
+    type: 'spr',
+    passage: '',
+    prompt: 'For what value of \\(c\\) does the equation \\(x^2 + 8x + c = 0\\) have exactly one real solution?',
+    choices: [],
+    answer: '16',
+    explanation: 'A quadratic has exactly one real solution when its discriminant is zero: \\(b^2 - 4ac = 0\\). Here \\(8^2 - 4(1)c = 0 \\Rightarrow 64 - 4c = 0 \\Rightarrow c = 16\\).',
+    translation: {
+      words: { value: 'valor', equation: 'equação', exactly: 'exatamente', solution: 'solução' },
+      prompt_pt: 'Para qual valor de \\(c\\) a equação \\(x^2 + 8x + c = 0\\) tem exatamente uma solução real?'
+    }
+  },
+
+  // ─── PROBLEM-SOLVING & DATA ANALYSIS ───────────────────────────────────────
+  {
+    id: 'math-psda-m-201',
+    section: 'math',
+    domain: 'problem_solving_data_analysis',
+    skill: 'percentages',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: '',
+    prompt: 'A jacket originally priced at 80 dollars is discounted by 25%. A 10% sales tax is then applied to the discounted price. What is the final price?',
+    choices: ['66 dollars', '68 dollars', '60 dollars', '72 dollars'],
+    answer: 'A',
+    explanation: 'Discounted price: \\(80 \\times 0.75 = 60\\). After 10% tax: \\(60 \\times 1.10 = 66\\) dollars.',
+    translation: {
+      words: { jacket: 'jaqueta', priced: 'com preço', discounted: 'com desconto', tax: 'imposto', applied: 'aplicado', final: 'final', price: 'preço' },
+      prompt_pt: 'Uma jaqueta com preço original de 80 dólares recebe um desconto de 25%. Em seguida, aplica-se um imposto sobre vendas de 10% ao preço com desconto. Qual é o preço final?'
+    }
+  },
+  {
+    id: 'math-psda-m-202',
+    section: 'math',
+    domain: 'problem_solving_data_analysis',
+    skill: 'statistics',
+    difficulty: 'medium',
+    type: 'spr',
+    passage: '',
+    prompt: 'A data set consists of the values 4, 7, 7, 9, and 13. What is the positive difference between the mean and the median of the data set?',
+    choices: [],
+    answer: '1',
+    explanation: 'Mean \\(= \\dfrac{4+7+7+9+13}{5} = \\dfrac{40}{5} = 8\\). Median (middle value) \\(= 7\\). Difference \\(= 8 - 7 = 1\\).',
+    translation: {
+      words: { data: 'dados', values: 'valores', difference: 'diferença', mean: 'média', median: 'mediana' },
+      prompt_pt: 'Um conjunto de dados tem os valores 4, 7, 7, 9 e 13. Qual é a diferença positiva entre a média e a mediana do conjunto?'
+    }
+  },
+
+  // ─── GEOMETRY & TRIGONOMETRY ───────────────────────────────────────────────
+  {
+    id: 'math-geo-m-201',
+    section: 'math',
+    domain: 'geometry_trigonometry',
+    skill: 'triangles',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: '',
+    prompt: 'In a right triangle, one leg measures 9 and the hypotenuse measures 15. What is the length of the other leg?',
+    choices: ['12', '13', '24', '6'],
+    answer: 'A',
+    explanation: 'By the Pythagorean theorem: \\(\\text{leg}^2 = 15^2 - 9^2 = 225 - 81 = 144\\), so the other leg \\(= \\sqrt{144} = 12\\).',
+    translation: {
+      words: { right: 'reto', triangle: 'triângulo', leg: 'cateto', measures: 'mede', hypotenuse: 'hipotenusa', length: 'comprimento' },
+      prompt_pt: 'Em um triângulo retângulo, um cateto mede 9 e a hipotenusa mede 15. Qual é o comprimento do outro cateto?'
+    }
+  },
+  {
+    id: 'math-geo-m-202',
+    section: 'math',
+    domain: 'geometry_trigonometry',
+    skill: 'circles',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: '',
+    prompt: 'A circle has a radius of 6. What is the area of a sector of the circle that has a central angle of 60°?',
+    choices: ['\\(6\\pi\\)', '\\(12\\pi\\)', '\\(36\\pi\\)', '\\(3\\pi\\)'],
+    answer: 'A',
+    explanation: 'Sector area \\(= \\pi r^2 \\cdot \\dfrac{\\theta}{360} = \\pi (6)^2 \\cdot \\dfrac{60}{360} = 36\\pi \\cdot \\dfrac{1}{6} = 6\\pi\\).',
+    translation: {
+      words: { circle: 'círculo', radius: 'raio', area: 'área', sector: 'setor', central: 'central', angle: 'ângulo' },
+      prompt_pt: 'Um círculo tem raio 6. Qual é a área de um setor do círculo com ângulo central de 60°?'
+    }
+  },
 ];
 
 export default MATH_QUESTIONS;
