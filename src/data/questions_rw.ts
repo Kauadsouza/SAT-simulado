@@ -834,6 +834,433 @@ export const RW_QUESTIONS: Question[] = [
     explanation: 'The data compare three categories of cities as they currently exist — it cannot tell us what would happen if coverage fell further below 10%, because no such cities appear in the dataset. This is an extrapolation beyond the data. Option B overstates support for a claim about going below the threshold. Option C misreads the data (there are clear differences). Option D conflates confirming a trend with confirming a specific hypothetical intervention.',
     translation: { words: {}, passage_pt: '', prompt_pt: '' }
   },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // EXPANSION BATCH 1 — +20 original questions (all domains, all difficulties)
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // ─── CRAFT & STRUCTURE ─────────────────────────────────────────────────────
+  {
+    id: 'rw-cs-e-201',
+    section: 'reading_writing',
+    domain: 'craft_and_structure',
+    skill: 'words_in_context',
+    difficulty: 'easy',
+    type: 'multiple_choice',
+    passage: 'The coach was known for being _______ with praise; she complimented her players only when they truly earned it, which made her rare words of encouragement especially meaningful.',
+    prompt: 'Which choice completes the text with the most logical and precise word or phrase?',
+    choices: ['sparing', 'generous', 'reckless', 'confused'],
+    answer: 'A',
+    explanation: '"Sparing" means giving or using only a little of something. The clue "only when they truly earned it" and "rare words" shows the coach praised infrequently. "Generous" is the opposite; "reckless" and "confused" do not fit.',
+    translation: {
+      words: { coach: 'treinadora', praise: 'elogio', complimented: 'elogiava', earned: 'mereciam', rare: 'raras', encouragement: 'incentivo', meaningful: 'significativas', sparing: 'parcimoniosa', generous: 'generosa', reckless: 'imprudente' },
+      passage_pt: 'A treinadora era conhecida por ser _______ com elogios; ela elogiava suas jogadoras apenas quando realmente mereciam, o que tornava suas raras palavras de incentivo especialmente significativas.',
+      prompt_pt: 'Qual escolha completa o texto com a palavra ou frase mais lógica e precisa?',
+      choices_pt: ['parcimoniosa', 'generosa', 'imprudente', 'confusa']
+    }
+  },
+  {
+    id: 'rw-cs-m-201',
+    section: 'reading_writing',
+    domain: 'craft_and_structure',
+    skill: 'words_in_context',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: "Although the senator's proposal was initially met with skepticism, her _______ presentation of the data gradually won over even her most vocal critics.",
+    prompt: 'Which choice completes the text with the most logical and precise word or phrase?',
+    choices: ['cogent', 'tedious', 'evasive', 'careless'],
+    answer: 'A',
+    explanation: '"Cogent" means clear, logical, and convincing — exactly what would win over skeptical critics. "Tedious," "evasive," and "careless" are all negative and would not persuade anyone.',
+    translation: {
+      words: { senator: 'senadora', proposal: 'proposta', skepticism: 'ceticismo', gradually: 'gradualmente', vocal: 'ferrenhos', critics: 'críticos', cogent: 'convincente', tedious: 'tediosa', evasive: 'evasiva', careless: 'descuidada' },
+      passage_pt: 'Embora a proposta da senadora tenha sido inicialmente recebida com ceticismo, sua apresentação _______ dos dados gradualmente conquistou até seus críticos mais ferrenhos.',
+      prompt_pt: 'Qual escolha completa o texto com a palavra ou frase mais lógica e precisa?',
+      choices_pt: ['convincente', 'tediosa', 'evasiva', 'descuidada']
+    }
+  },
+  {
+    id: 'rw-cs-m-202',
+    section: 'reading_writing',
+    domain: 'craft_and_structure',
+    skill: 'text_structure_and_purpose',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: 'Marine biologist Dr. Elena Ruiz begins her lecture not with statistics about coral decline, but with a vivid description of a thriving reef she explored as a child. Only after her audience is immersed in this image does she reveal that the reef no longer exists.',
+    prompt: 'What is the main rhetorical effect of how Dr. Ruiz structures the opening of her lecture?',
+    choices: [
+      'It builds an emotional connection before revealing a loss, making the information that follows more impactful',
+      'It downplays the seriousness of coral decline by focusing on positive memories',
+      'It suggests that statistics are always less reliable than personal experience',
+      'It implies that the audience is already expert in marine biology'
+    ],
+    answer: 'A',
+    explanation: 'Ruiz first immerses the audience in a vivid, positive image and only then reveals the reef is gone — priming an emotional response that makes the loss (and any data to come) hit harder. The other choices misread her purpose.',
+    translation: {
+      words: { lecture: 'palestra', decline: 'declínio', vivid: 'vívida', thriving: 'próspero', reef: 'recife', immersed: 'imersa', reveal: 'revelar' },
+      passage_pt: 'A bióloga marinha Dra. Elena Ruiz começa sua palestra não com estatísticas sobre o declínio dos corais, mas com uma descrição vívida de um recife próspero que explorou quando criança. Só depois que a plateia está imersa nessa imagem ela revela que o recife não existe mais.',
+      prompt_pt: 'Qual é o principal efeito retórico do modo como a Dra. Ruiz estrutura a abertura de sua palestra?',
+      choices_pt: [
+        'Cria uma conexão emocional antes de revelar uma perda, tornando a informação seguinte mais impactante',
+        'Minimiza a gravidade do declínio dos corais ao focar em memórias positivas',
+        'Sugere que estatísticas são sempre menos confiáveis que a experiência pessoal',
+        'Implica que a plateia já é especialista em biologia marinha'
+      ]
+    }
+  },
+  {
+    id: 'rw-cs-h-201',
+    section: 'reading_writing',
+    domain: 'craft_and_structure',
+    skill: 'cross_text_connections',
+    difficulty: 'hard',
+    type: 'multiple_choice',
+    passage: "Text 1: Economist Adam Smith argued that individuals pursuing their own self-interest are, as if guided by an \"invisible hand,\" led to promote the good of society as a whole.\n\nText 2: Behavioral economists have complicated this view, demonstrating that individuals frequently act against their own long-term interests — over-borrowing, under-saving — in ways that can destabilize the very markets Smith believed self-interest would optimize.",
+    prompt: "Based on the texts, how would the behavioral economists in Text 2 most likely respond to Smith's argument in Text 1?",
+    choices: [
+      "They would argue that Smith's model underestimates how often individuals fail to act in their own rational self-interest",
+      "They would fully endorse Smith's claim that self-interest reliably benefits society",
+      'They would contend that markets cannot function at all without strict government control',
+      'They would argue that human self-interest does not actually exist'
+    ],
+    answer: 'A',
+    explanation: 'Text 2 shows people often act against their long-term interests, undermining Smith\'s premise that self-interest reliably optimizes markets. So behavioral economists would say Smith underestimates human irrationality. B contradicts Text 2; C and D overstate claims the text never makes.',
+    translation: { words: {}, passage_pt: '', prompt_pt: '' }
+  },
+  {
+    id: 'rw-cs-h-202',
+    section: 'reading_writing',
+    domain: 'craft_and_structure',
+    skill: 'words_in_context',
+    difficulty: 'hard',
+    type: 'multiple_choice',
+    passage: 'The critic praised the memoir for its _______ tone: the author neither wallows in self-pity nor minimizes her suffering, but instead recounts her hardships with an almost clinical detachment that paradoxically heightens their emotional weight.',
+    prompt: 'Which choice completes the text with the most logical and precise word or phrase?',
+    choices: ['dispassionate', 'melodramatic', 'indignant', 'effusive'],
+    answer: 'A',
+    explanation: '"Dispassionate" means calm and unemotional — it matches "clinical detachment" and the author neither wallowing nor minimizing. "Melodramatic" and "effusive" mean overly emotional (the opposite); "indignant" means angry, which the passage rules out.',
+    translation: { words: {}, passage_pt: '', prompt_pt: '' }
+  },
+
+  // ─── INFORMATION & IDEAS ───────────────────────────────────────────────────
+  {
+    id: 'rw-ii-m-201',
+    section: 'reading_writing',
+    domain: 'information_and_ideas',
+    skill: 'central_ideas_and_details',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: 'The Antikythera mechanism, recovered from an ancient shipwreck in 1901, is an intricate bronze device of interlocking gears. For decades its purpose baffled researchers. Modern imaging has now revealed that it was an astronomical calculator, able to predict the positions of the sun, moon, and planets — a level of mechanical sophistication not seen again in Europe for over a thousand years.',
+    prompt: 'Which choice best states the main idea of the text?',
+    choices: [
+      'A long-mysterious ancient device has been identified as a remarkably advanced astronomical calculator',
+      'The Antikythera mechanism was recovered from a shipwreck in 1901',
+      'Modern imaging technology has a wide range of uses in archaeology',
+      'Ancient European engineers were more skilled than modern ones'
+    ],
+    answer: 'A',
+    explanation: 'The passage builds to the revelation that this once-baffling device is a surprisingly advanced astronomical calculator — that is the central idea. B is a supporting detail, C is too broad, and D is an unsupported overstatement.',
+    translation: {
+      words: { recovered: 'recuperado', shipwreck: 'naufrágio', intricate: 'intrincado', gears: 'engrenagens', baffled: 'intrigou', imaging: 'imageamento', sophistication: 'sofisticação' },
+      passage_pt: 'O mecanismo de Antikythera, recuperado de um antigo naufrágio em 1901, é um intrincado dispositivo de bronze com engrenagens interligadas. Por décadas, seu propósito intrigou os pesquisadores. O imageamento moderno revelou agora que era uma calculadora astronômica, capaz de prever as posições do sol, da lua e dos planetas — um nível de sofisticação mecânica não visto novamente na Europa por mais de mil anos.',
+      prompt_pt: 'Qual escolha melhor expressa a ideia principal do texto?',
+      choices_pt: [
+        'Um dispositivo antigo, por muito tempo misterioso, foi identificado como uma calculadora astronômica notavelmente avançada',
+        'O mecanismo de Antikythera foi recuperado de um naufrágio em 1901',
+        'A tecnologia moderna de imageamento tem muitos usos na arqueologia',
+        'Os engenheiros europeus antigos eram mais habilidosos que os modernos'
+      ]
+    }
+  },
+  {
+    id: 'rw-ii-m-202',
+    section: 'reading_writing',
+    domain: 'information_and_ideas',
+    skill: 'command_of_evidence_textual',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: 'A student hypothesizes that adding a small amount of salt to water before boiling significantly raises the water\'s boiling temperature, dramatically speeding up cooking.',
+    prompt: "Which finding, if true, would most directly weaken the student's hypothesis?",
+    choices: [
+      "Adding the typical amount of salt used in cooking raises water's boiling point by only a fraction of a degree",
+      'Salt water tastes noticeably different from fresh water',
+      'Salt dissolves more quickly in hot water than in cold water',
+      'Many professional chefs add salt to their pasta water'
+    ],
+    answer: 'A',
+    explanation: 'The hypothesis claims a *significant* rise in boiling temperature. A shows the rise is negligible, directly undercutting that claim. The other options are about taste, dissolving rate, or chef habits — none addresses the temperature claim.',
+    translation: {
+      words: { hypothesizes: 'levanta a hipótese', boiling: 'fervura', significantly: 'significativamente', raises: 'eleva', dramatically: 'drasticamente', weaken: 'enfraquecer', fraction: 'fração' },
+      passage_pt: 'Um estudante levanta a hipótese de que adicionar uma pequena quantidade de sal à água antes de ferver eleva significativamente a temperatura de fervura, acelerando drasticamente o cozimento.',
+      prompt_pt: 'Qual descoberta, se verdadeira, enfraqueceria mais diretamente a hipótese do estudante?',
+      choices_pt: [
+        'Adicionar a quantidade típica de sal usada na culinária eleva o ponto de fervura em apenas uma fração de grau',
+        'A água salgada tem sabor perceptivelmente diferente da água doce',
+        'O sal se dissolve mais rápido em água quente do que em água fria',
+        'Muitos chefs profissionais adicionam sal à água do macarrão'
+      ]
+    }
+  },
+  {
+    id: 'rw-ii-m-203',
+    section: 'reading_writing',
+    domain: 'information_and_ideas',
+    skill: 'inferences',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: 'Unlike most owls, which hunt at night, the burrowing owl is frequently active during daylight hours. This species also nests underground, often in burrows abandoned by prairie dogs, rather than in trees.',
+    prompt: 'Which choice most logically completes the text? The burrowing owl, therefore, differs from typical owls in both its _______',
+    choices: [
+      'timing of activity and choice of nesting site.',
+      'diet and migration patterns.',
+      'wingspan and feather coloration.',
+      'average lifespan and hunting technique.'
+    ],
+    answer: 'A',
+    explanation: 'The passage gives exactly two contrasts with typical owls: being active by day (timing of activity) and nesting underground (nesting site). The other options name traits the text never discusses.',
+    translation: {
+      words: { owls: 'corujas', hunt: 'caçam', burrowing: 'cavadora', daylight: 'luz do dia', nests: 'faz ninho', underground: 'subterrâneo', burrows: 'tocas', abandoned: 'abandonadas' },
+      passage_pt: 'Diferentemente da maioria das corujas, que caçam à noite, a coruja-buraqueira é frequentemente ativa durante o dia. Essa espécie também faz ninho no subsolo, muitas vezes em tocas abandonadas por cães-da-pradaria, em vez de em árvores.',
+      prompt_pt: 'Qual escolha completa o texto de forma mais lógica? A coruja-buraqueira, portanto, difere das corujas típicas tanto em seu _______',
+      choices_pt: [
+        'horário de atividade quanto na escolha do local do ninho.',
+        'dieta quanto nos padrões de migração.',
+        'envergadura quanto na coloração das penas.',
+        'expectativa de vida quanto na técnica de caça.'
+      ]
+    }
+  },
+  {
+    id: 'rw-ii-h-201',
+    section: 'reading_writing',
+    domain: 'information_and_ideas',
+    skill: 'command_of_evidence_quantitative',
+    difficulty: 'hard',
+    type: 'multiple_choice',
+    passage: 'A study tracked reading comprehension scores of students who read either on paper or on screens. On average, paper readers scored 8 percent higher on tests of deep comprehension, but the two groups performed nearly identically on tests of simple fact retrieval.',
+    prompt: 'Which statement is best supported by the data?',
+    choices: [
+      'The advantage of paper reading appears specific to deeper comprehension rather than to basic recall',
+      'Reading on screens harms every form of comprehension',
+      'Students who read on paper are generally more intelligent',
+      'Simple fact retrieval matters more than deep comprehension'
+    ],
+    answer: 'A',
+    explanation: 'Paper readers led only on deep comprehension and tied on fact retrieval, so any advantage is specific to deep comprehension. B overstates (no harm shown on recall), while C and D draw conclusions the data do not support.',
+    translation: { words: {}, passage_pt: '', prompt_pt: '' }
+  },
+  {
+    id: 'rw-ii-h-202',
+    section: 'reading_writing',
+    domain: 'information_and_ideas',
+    skill: 'inferences',
+    difficulty: 'hard',
+    type: 'multiple_choice',
+    passage: 'The fossil record shows that the ancestors of modern whales were four-legged land mammals. Over millions of years their forelimbs became flippers, their hind limbs all but disappeared, and their nostrils migrated to the top of the head as blowholes. Yet modern whale embryos still briefly develop tiny hind-limb buds before reabsorbing them.',
+    prompt: 'The detail about whale embryos developing hind-limb buds most strongly suggests that',
+    choices: [
+      "a species' evolutionary history can leave traces in its development even after the related structures vanish in adults",
+      'modern whales will eventually regrow functional hind limbs',
+      'whale embryos are physically identical to those of land mammals',
+      'the fossil record of whales is unreliable'
+    ],
+    answer: 'A',
+    explanation: 'Embryos briefly forming structures that adults no longer have is evidence that developmental stages can preserve ancestral features. B is an unwarranted prediction, C overstates "identical," and D contradicts the passage, which treats the fossil record as informative.',
+    translation: { words: {}, passage_pt: '', prompt_pt: '' }
+  },
+
+  // ─── STANDARD ENGLISH CONVENTIONS ──────────────────────────────────────────
+  {
+    id: 'rw-sec-e-201',
+    section: 'reading_writing',
+    domain: 'standard_english_conventions',
+    skill: 'sentence_boundaries',
+    difficulty: 'easy',
+    type: 'multiple_choice',
+    passage: "By the end of the season, the young striker had scored fifteen goals _______ she was named the league's most valuable player.",
+    prompt: 'Which choice completes the text so that it conforms to the conventions of Standard English?',
+    choices: [', and', ', ', ' ', ' and'],
+    answer: 'A',
+    explanation: 'Two independent clauses ("the striker had scored fifteen goals" and "she was named MVP") must be joined by a comma plus a coordinating conjunction: ", and". A bare comma is a comma splice, a space is a run-on, and "and" without a comma is nonstandard here.',
+    translation: {
+      words: { season: 'temporada', striker: 'atacante', scored: 'marcou', goals: 'gols', named: 'nomeada', league: 'liga', valuable: 'valiosa' },
+      passage_pt: 'Ao fim da temporada, a jovem atacante havia marcado quinze gols _______ ela foi nomeada a jogadora mais valiosa da liga.',
+      prompt_pt: 'Qual escolha completa o texto de acordo com as convenções do inglês padrão?',
+      choices_pt: [', and (vírgula + conjunção)', ', (só vírgula)', ' (espaço/sem pontuação)', ' and (sem vírgula)']
+    }
+  },
+  {
+    id: 'rw-sec-m-201',
+    section: 'reading_writing',
+    domain: 'standard_english_conventions',
+    skill: 'form_structure_and_sense',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: 'The collection of rare coins, accumulated over three generations by the Moreau family, _______ now on display at the national museum.',
+    prompt: 'Which choice completes the text so that it conforms to the conventions of Standard English?',
+    choices: ['is', 'are', 'were', 'being'],
+    answer: 'A',
+    explanation: 'The subject is "collection," which is singular, so the verb must be "is." The plural "coins" sits inside a prepositional phrase and does not control the verb. "Being" is not a finite verb.',
+    translation: {
+      words: { collection: 'coleção', rare: 'raras', coins: 'moedas', accumulated: 'acumulada', generations: 'gerações', display: 'exposição', museum: 'museu' },
+      passage_pt: 'A coleção de moedas raras, acumulada ao longo de três gerações pela família Moreau, _______ agora em exposição no museu nacional.',
+      prompt_pt: 'Qual escolha completa o texto de acordo com as convenções do inglês padrão?',
+      choices_pt: ['is (está – singular)', 'are (estão – plural)', 'were (estavam)', 'being (gerúndio)']
+    }
+  },
+  {
+    id: 'rw-sec-m-202',
+    section: 'reading_writing',
+    domain: 'standard_english_conventions',
+    skill: 'sentence_boundaries',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: 'The recipe calls for three uncommon ingredients _______ saffron, star anise, and dried lime.',
+    prompt: 'Which choice completes the text so that it conforms to the conventions of Standard English?',
+    choices: [':', ';', ', and', '— and'],
+    answer: 'A',
+    explanation: 'A colon correctly introduces a list after a complete independent clause. A semicolon would need a second independent clause, and ", and" or "— and" are nonstandard for introducing this list.',
+    translation: {
+      words: { recipe: 'receita', calls: 'pede', uncommon: 'incomuns', ingredients: 'ingredientes', saffron: 'açafrão', anise: 'anis', dried: 'seca', lime: 'limão' },
+      passage_pt: 'A receita pede três ingredientes incomuns _______ açafrão, anis-estrelado e limão seco.',
+      prompt_pt: 'Qual escolha completa o texto de acordo com as convenções do inglês padrão?',
+      choices_pt: [': (dois-pontos)', '; (ponto e vírgula)', ', and', '— and']
+    }
+  },
+  {
+    id: 'rw-sec-h-201',
+    section: 'reading_writing',
+    domain: 'standard_english_conventions',
+    skill: 'form_structure_and_sense',
+    difficulty: 'hard',
+    type: 'multiple_choice',
+    passage: 'Having studied the migratory patterns of monarch butterflies for over a decade, _______',
+    prompt: 'Which choice completes the text so that it conforms to the conventions of Standard English?',
+    choices: [
+      'the entomologist could predict their arrival within days.',
+      'the arrival of the butterflies could be predicted within days.',
+      'it was possible to predict their arrival within days.',
+      'their arrival could be predicted within days.'
+    ],
+    answer: 'A',
+    explanation: 'The introductory participial phrase "Having studied…" must modify the person who did the studying. Only "the entomologist" can logically follow the comma; the other options create a dangling modifier by attaching the phrase to "arrival," "it," or "their arrival".',
+    translation: { words: {}, passage_pt: '', prompt_pt: '' }
+  },
+  {
+    id: 'rw-sec-h-202',
+    section: 'reading_writing',
+    domain: 'standard_english_conventions',
+    skill: 'sentence_boundaries',
+    difficulty: 'hard',
+    type: 'multiple_choice',
+    passage: "The novel was rejected by twelve publishers _______ it went on to win the nation's most prestigious literary award and to sell millions of copies.",
+    prompt: 'Which choice completes the text so that it conforms to the conventions of Standard English?',
+    choices: ['; nevertheless,', ', nevertheless', ' nevertheless', '; nevertheless'],
+    answer: 'A',
+    explanation: '"Nevertheless" is a conjunctive adverb linking two independent clauses, so it needs a semicolon before it and a comma after it: "; nevertheless,". A bare comma creates a comma splice, and the other options omit required punctuation.',
+    translation: { words: {}, passage_pt: '', prompt_pt: '' }
+  },
+
+  // ─── EXPRESSION OF IDEAS ───────────────────────────────────────────────────
+  {
+    id: 'rw-eoi-e-201',
+    section: 'reading_writing',
+    domain: 'expression_of_ideas',
+    skill: 'transitions',
+    difficulty: 'easy',
+    type: 'multiple_choice',
+    passage: 'Most cacti store water in their thick stems to survive long droughts. _______ some desert plants survive by growing extremely long roots that reach deep underground water.',
+    prompt: 'Which choice completes the text with the most logical transition?',
+    choices: ['By contrast,', 'For example,', 'As a result,', 'In conclusion,'],
+    answer: 'A',
+    explanation: 'The second sentence describes a *different* survival strategy, so a contrast transition is needed. "For example" would signal an instance of the same idea, "As a result" signals cause-effect, and "In conclusion" signals a summary.',
+    translation: {
+      words: { cacti: 'cactos', store: 'armazenam', stems: 'caules', droughts: 'secas', roots: 'raízes', reach: 'alcançam', underground: 'subterrânea' },
+      passage_pt: 'A maioria dos cactos armazena água em seus caules grossos para sobreviver a longas secas. _______ algumas plantas do deserto sobrevivem desenvolvendo raízes extremamente longas que alcançam a água subterrânea profunda.',
+      prompt_pt: 'Qual escolha completa o texto com a transição mais lógica?',
+      choices_pt: ['By contrast, (Em contraste,)', 'For example, (Por exemplo,)', 'As a result, (Como resultado,)', 'In conclusion, (Em conclusão,)']
+    }
+  },
+  {
+    id: 'rw-eoi-m-201',
+    section: 'reading_writing',
+    domain: 'expression_of_ideas',
+    skill: 'transitions',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: "The new tutoring program was expensive to run and required dozens of volunteers. _______ it raised participating students' average test scores by nearly 20 percent, a result administrators called well worth the cost.",
+    prompt: 'Which choice completes the text with the most logical transition?',
+    choices: ['Nonetheless,', 'Therefore,', 'Likewise,', 'For instance,'],
+    answer: 'A',
+    explanation: 'There is a contrast between the program\'s high cost and its worthwhile benefit, so a concessive transition like "Nonetheless" fits. "Therefore" signals a result, "Likewise" a similarity, and "For instance" an example.',
+    translation: {
+      words: { tutoring: 'reforço/tutoria', expensive: 'cara', required: 'exigia', volunteers: 'voluntários', raised: 'elevou', scores: 'notas', administrators: 'administradores' },
+      passage_pt: 'O novo programa de tutoria era caro de operar e exigia dezenas de voluntários. _______ ele elevou as notas médias dos alunos participantes em quase 20 por cento, um resultado que os administradores consideraram valer o custo.',
+      prompt_pt: 'Qual escolha completa o texto com a transição mais lógica?',
+      choices_pt: ['Nonetheless, (Ainda assim,)', 'Therefore, (Portanto,)', 'Likewise, (Da mesma forma,)', 'For instance, (Por exemplo,)']
+    }
+  },
+  {
+    id: 'rw-eoi-m-202',
+    section: 'reading_writing',
+    domain: 'expression_of_ideas',
+    skill: 'rhetorical_synthesis',
+    difficulty: 'medium',
+    type: 'multiple_choice',
+    passage: 'While researching, a student took the following notes:\n• The axolotl is a salamander native to lakes near Mexico City.\n• Unlike most amphibians, it never undergoes metamorphosis; it keeps its gills for life.\n• It can regenerate lost limbs, parts of its heart, and even portions of its brain.\n• It is critically endangered in the wild.',
+    prompt: "The student wants to emphasize the axolotl's unusual regenerative ability. Which choice most effectively uses relevant information from the notes to accomplish this goal?",
+    choices: [
+      'The axolotl, a salamander native to Mexico, can regenerate not only lost limbs but even parts of its heart and brain.',
+      'The axolotl is a critically endangered salamander native to lakes near Mexico City.',
+      'Unlike most amphibians, the axolotl never undergoes metamorphosis.',
+      'The axolotl, found near Mexico City, keeps its gills for its entire life.'
+    ],
+    answer: 'A',
+    explanation: 'The goal is to emphasize regenerative ability. Only A foregrounds regeneration of limbs, heart, and brain. The other choices emphasize habitat, endangerment, or metamorphosis instead.',
+    translation: {
+      words: { notes: 'anotações', salamander: 'salamandra', native: 'nativa', metamorphosis: 'metamorfose', gills: 'guelras', regenerate: 'regenerar', limbs: 'membros', endangered: 'ameaçada' },
+      passage_pt: 'Durante a pesquisa, um estudante fez as seguintes anotações:\n• O axolote é uma salamandra nativa de lagos perto da Cidade do México.\n• Diferente da maioria dos anfíbios, ele nunca passa por metamorfose; mantém as guelras a vida toda.\n• Ele pode regenerar membros perdidos, partes do coração e até porções do cérebro.\n• Está criticamente ameaçado de extinção na natureza.',
+      prompt_pt: 'O estudante quer enfatizar a incomum capacidade regenerativa do axolote. Qual escolha usa as informações das anotações de forma mais eficaz para isso?',
+      choices_pt: [
+        'O axolote, uma salamandra nativa do México, pode regenerar não só membros perdidos, mas até partes do coração e do cérebro.',
+        'O axolote é uma salamandra criticamente ameaçada, nativa de lagos perto da Cidade do México.',
+        'Diferente da maioria dos anfíbios, o axolote nunca passa por metamorfose.',
+        'O axolote, encontrado perto da Cidade do México, mantém suas guelras a vida inteira.'
+      ]
+    }
+  },
+  {
+    id: 'rw-eoi-h-201',
+    section: 'reading_writing',
+    domain: 'expression_of_ideas',
+    skill: 'transitions',
+    difficulty: 'hard',
+    type: 'multiple_choice',
+    passage: 'Critics initially dismissed Impressionist paintings as unfinished sketches, mocking their loose brushwork and unblended colors. _______ these very techniques — once derided as evidence of incompetence — are now celebrated as deliberate innovations that captured fleeting effects of light in ways traditional methods could not.',
+    prompt: 'Which choice completes the text with the most logical transition?',
+    choices: ['Today, by contrast,', 'For this reason,', 'Similarly,', 'In addition,'],
+    answer: 'A',
+    explanation: 'The passage reverses from past dismissal to present celebration, so a contrasting, time-marking transition ("Today, by contrast") fits best. "For this reason" signals cause, while "Similarly" and "In addition" signal agreement or accumulation, not reversal.',
+    translation: { words: {}, passage_pt: '', prompt_pt: '' }
+  },
+  {
+    id: 'rw-eoi-h-202',
+    section: 'reading_writing',
+    domain: 'expression_of_ideas',
+    skill: 'rhetorical_synthesis',
+    difficulty: 'hard',
+    type: 'multiple_choice',
+    passage: "While researching, a student took the following notes:\n• Tardigrades, also called water bears, are microscopic animals.\n• They can survive being frozen, boiled, dehydrated, and exposed to the vacuum of space.\n• They achieve this by entering a 'tun' state, suspending their metabolism almost completely.\n• In 2007, living tardigrades were sent into open space and survived.",
+    prompt: 'The student wants to introduce tardigrades and their resilience to an audience unfamiliar with them. Which choice most effectively accomplishes this goal?',
+    choices: [
+      'Tardigrades, microscopic animals also known as water bears, are famous for surviving extremes — from boiling and freezing to the vacuum of space.',
+      'In 2007, living tardigrades were sent into open space and survived.',
+      "Tardigrades enter a 'tun' state, suspending their metabolism almost completely.",
+      'Tardigrades are microscopic animals.'
+    ],
+    answer: 'A',
+    explanation: 'For an unfamiliar audience, the sentence should both identify tardigrades and convey their resilience. A does both. B and C assume background knowledge and give only one detail, while D introduces them but omits the resilience the student wants to highlight.',
+    translation: { words: {}, passage_pt: '', prompt_pt: '' }
+  },
 ];
 
 export default RW_QUESTIONS;

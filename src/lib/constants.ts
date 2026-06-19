@@ -50,6 +50,43 @@ export const DOMAIN_LABELS: Record<string, string> = {
   geometry_trigonometry: 'Geometry & Trigonometry',
 };
 
+// Per-skill labels (PT-BR) for drill filters & analytics. Keys match q.skill.
+export const SKILL_LABELS: Record<string, string> = {
+  // Reading & Writing
+  words_in_context: 'Palavras em Contexto',
+  text_structure_and_purpose: 'Estrutura e Propósito do Texto',
+  cross_text_connections: 'Conexões entre Textos',
+  central_ideas_and_details: 'Ideias Centrais e Detalhes',
+  command_of_evidence_textual: 'Evidência Textual',
+  command_of_evidence_quantitative: 'Evidência Quantitativa',
+  inferences: 'Inferências',
+  sentence_boundaries: 'Limites de Frase (pontuação)',
+  form_structure_and_sense: 'Forma, Estrutura e Sentido',
+  rhetorical_synthesis: 'Síntese Retórica',
+  transitions: 'Transições',
+  // Math
+  linear_equations: 'Equações Lineares',
+  linear_inequalities: 'Inequações Lineares',
+  systems_linear: 'Sistemas Lineares',
+  linear_functions: 'Funções Lineares',
+  quadratic_functions: 'Funções Quadráticas',
+  exponential_functions: 'Funções Exponenciais',
+  polynomial_functions: 'Funções Polinomiais',
+  ratios_rates: 'Razões e Proporções',
+  percentages: 'Porcentagens',
+  data_interpretation: 'Interpretação de Dados',
+  probability: 'Probabilidade',
+  statistics: 'Estatística',
+  area_volume: 'Área e Volume',
+  triangles: 'Triângulos',
+  circles: 'Círculos',
+  trigonometry: 'Trigonometria',
+};
+
+export function skillLabel(skill: string): string {
+  return SKILL_LABELS[skill] ?? skill.replace(/_/g, ' ');
+}
+
 export const TIER_LABELS: Record<string, string> = {
   easy: 'Easy',
   medium: 'Medium',

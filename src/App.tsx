@@ -5,6 +5,7 @@ import { Layout } from './components/Layout';
 import { LoginPage } from './pages/LoginPage';
 import { DashboardPage } from './pages/DashboardPage';
 import { SimuladosPage } from './pages/SimuladosPage';
+import { PracticePage } from './pages/PracticePage';
 import { HistoricoPage } from './pages/HistoricoPage';
 import { ExamPage } from './pages/ExamPage';
 import { EnglishPage } from './pages/EnglishPage';
@@ -39,6 +40,7 @@ export default function App() {
         <Route element={<ProtectedLayout />}>
           <Route path="/"          element={<DashboardPage />} />
           <Route path="/simulados" element={<SimuladosPage />} />
+          <Route path="/treino"    element={<PracticePage />} />
           <Route path="/historico" element={<HistoricoPage />} />
           <Route path="/ingles"    element={<EnglishPage />} />
         </Route>

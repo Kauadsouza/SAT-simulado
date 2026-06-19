@@ -33,6 +33,20 @@ const navItems = [
     ),
   },
   {
+    to: '/treino',
+    label: 'Treino',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/>
+      </svg>
+    ),
+    iconSm: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.6" fill="currentColor"/>
+      </svg>
+    ),
+  },
+  {
     to: '/historico',
     label: 'Histórico',
     icon: (

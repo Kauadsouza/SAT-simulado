@@ -6,7 +6,12 @@ import {
   savePlacementResult,
   completeLessonForUser,
   resetPlacement,
+  addXpAndStreak,
 } from '../lib/english_storage';
+import { getVocabStats, type VocabStats } from '../lib/vocab_store';
+import { VocabTrainer } from '../components/english/VocabTrainer';
+import { ListeningTrainer } from '../components/english/ListeningTrainer';
+import { SpeakingTrainer } from '../components/english/SpeakingTrainer';
 import { PLACEMENT_QUESTIONS, LESSONS, QUESTION_MAP, LESSONS_PER_LEVEL } from '../data/english_data';
 import {
   calculatePlacementLevel,
@@ -26,7 +31,12 @@ type Screen =
   | 'placement-test'
   | 'placement-result'
   | 'study-dashboard'
-  | 'study-lesson';
+  | 'study-lesson'
+  | 'vocab'
+  | 'listening'
+  | 'speaking';
+
+type ToolId = 'vocab' | 'listening' | 'speaking';
 
 const LEVEL_COLORS: Record<CEFRLevel, { bg: string; text: string; border: string; shadow: string }> = {
   A1: { bg: 'rgba(16,240,160,0.12)', text: '#10f0a0', border: 'rgba(16,240,160,0.3)', shadow: 'rgba(16,240,160,0.2)' },
@@ -482,13 +492,31 @@ function StudyDashboard({
   progress,
   onSelectLesson,
   onRetake,
+  onOpenTool,
 }: {
   progress: UserEnglishProgress;
   onSelectLesson: (id: string) => void;
   onRetake: () => void;
+  onOpenTool: (tool: ToolId) => void;
 }) {
   const level = progress.currentLevel!;
   const c = LEVEL_COLORS[level];
+
+  const [vocab, setVocab] = useState<VocabStats | null>(null);
+  useEffect(() => {
+    getVocabStats(progress.userId, level).then(setVocab);
+  }, [progress.userId, level]);
+
+  const TOOLS: { id: ToolId; icon: string; title: string; sub: string }[] = [
+    {
+      id: 'vocab', icon: '🗂️', title: 'Vocabulário',
+      sub: vocab
+        ? (vocab.dueCount > 0 ? `${vocab.dueCount} para revisar` : `${vocab.newAvailable} palavras novas`)
+        : 'Flashcards com áudio',
+    },
+    { id: 'listening', icon: '🎧', title: 'Listening', sub: 'Ditado por áudio' },
+    { id: 'speaking', icon: '🎤', title: 'Speaking', sub: 'Pronúncia com nota' },
+  ];
 
   const completedLevels = new Set<CEFRLevel>(
     CEFR_ORDER.filter((lvl) => {
@@ -582,6 +610,28 @@ function StudyDashboard({
             }}
           />
         </div>
+      </div>
+
+      {/* Practice tools — vocab SRS, listening, speaking */}
+      <p className="text-xs font-bold uppercase tracking-widest mb-2" style={{ color: 'var(--text-secondary)' }}>
+        Treino diário
+      </p>
+      <div className="grid grid-cols-3 gap-3 mb-7">
+        {TOOLS.map((t) => (
+          <button
+            key={t.id}
+            onClick={() => onOpenTool(t.id)}
+            className="rounded-2xl p-4 text-center transition-all"
+            style={{
+              background: 'var(--bg-card)',
+              border: `1px solid ${t.id === 'vocab' && vocab && vocab.dueCount > 0 ? 'rgba(255,77,109,0.4)' : 'var(--border-glow)'}`,
+            }}
+          >
+            <div className="text-2xl mb-1">{t.icon}</div>
+            <div className="text-sm font-bold mb-0.5" style={{ color: 'var(--text-primary)' }}>{t.title}</div>
+            <div className="text-[0.65rem] leading-tight" style={{ color: 'var(--text-secondary)' }}>{t.sub}</div>
+          </button>
+        ))}
       </div>
 
       {/* Lesson map */}
@@ -1239,6 +1289,19 @@ export function EnglishPage() {
     setScreen('placement-intro');
   }, [user]);
 
+  // Vocab / listening / speaking trainers finished — bank XP, refresh, go back.
+  const handleToolFinish = useCallback(
+    async (xp: number) => {
+      if (!user?.name) { setScreen('study-dashboard'); return; }
+      if (xp > 0) {
+        const updated = await addXpAndStreak(user.name, xp);
+        setProgress(updated);
+      }
+      setScreen('study-dashboard');
+    },
+    [user]
+  );
+
   const showPageHeader = screen !== 'placement-test' && screen !== 'study-lesson';
   const subTitle: Record<Screen, string> = {
     loading: '',
@@ -1247,6 +1310,9 @@ export function EnglishPage() {
     'placement-result': 'Resultado do diagnóstico',
     'study-dashboard': 'Painel de estudos',
     'study-lesson': '',
+    vocab: 'Treino de vocabulário',
+    listening: 'Treino de listening',
+    speaking: 'Treino de pronúncia',
   };
 
   return (
@@ -1324,6 +1390,7 @@ export function EnglishPage() {
             setScreen('study-lesson');
           }}
           onRetake={handleRetake}
+          onOpenTool={(tool) => setScreen(tool)}
         />
       )}
 
@@ -1336,6 +1403,16 @@ export function EnglishPage() {
             setScreen('study-dashboard');
           }}
         />
+      )}
+
+      {screen === 'vocab' && (
+        <VocabTrainer userId={user!.name} userLevel={progress?.currentLevel ?? null} onFinish={handleToolFinish} />
+      )}
+      {screen === 'listening' && (
+        <ListeningTrainer userId={user!.name} userLevel={progress?.currentLevel ?? null} onFinish={handleToolFinish} />
+      )}
+      {screen === 'speaking' && (
+        <SpeakingTrainer userId={user!.name} userLevel={progress?.currentLevel ?? null} onFinish={handleToolFinish} />
       )}
     </div>
   );
