@@ -19,6 +19,7 @@ import {
   XP_PER_LESSON,
   calcOverallProgress,
 } from '../lib/english_scoring';
+import { DailyPlanScreen } from '../components/english/DailyPlanScreen';
 
 type Screen =
   | 'loading'
@@ -26,7 +27,8 @@ type Screen =
   | 'placement-test'
   | 'placement-result'
   | 'study-dashboard'
-  | 'study-lesson';
+  | 'study-lesson'
+  | 'daily-plan';
 
 const LEVEL_COLORS: Record<CEFRLevel, { bg: string; text: string; border: string; shadow: string }> = {
   A1: { bg: 'rgba(16,240,160,0.12)', text: '#10f0a0', border: 'rgba(16,240,160,0.3)', shadow: 'rgba(16,240,160,0.2)' },
@@ -482,10 +484,12 @@ function StudyDashboard({
   progress,
   onSelectLesson,
   onRetake,
+  onOpenDailyPlan,
 }: {
   progress: UserEnglishProgress;
   onSelectLesson: (id: string) => void;
   onRetake: () => void;
+  onOpenDailyPlan: () => void;
 }) {
   const level = progress.currentLevel!;
   const c = LEVEL_COLORS[level];
@@ -554,6 +558,32 @@ function StudyDashboard({
           </div>
         </div>
       </div>
+
+      {/* Plano de Hoje CTA */}
+      <button
+        onClick={onOpenDailyPlan}
+        className="w-full flex items-center gap-3 mb-5 text-left"
+        style={{
+          background: 'linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%)',
+          borderRadius: 16,
+          padding: '16px 18px',
+          boxShadow: '0 8px 28px var(--accent-glow)',
+        }}
+      >
+        <div
+          style={{ width: 42, height: 42, borderRadius: 12, flexShrink: 0, background: 'rgba(255,255,255,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2">
+            <rect x="3" y="4" width="18" height="18" rx="2" />
+            <path d="M16 2v4M8 2v4M3 10h18" />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="font-bold text-sm" style={{ color: '#fff' }}>Plano de Hoje</p>
+          <p className="text-xs" style={{ color: 'rgba(255,255,255,0.85)' }}>Sua sessão diária — SRS, blocos e streak</p>
+        </div>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2"><polyline points="9 18 15 12 9 6" /></svg>
+      </button>
 
       {/* Overall progress bar */}
       <div
@@ -1239,7 +1269,7 @@ export function EnglishPage() {
     setScreen('placement-intro');
   }, [user]);
 
-  const showPageHeader = screen !== 'placement-test' && screen !== 'study-lesson';
+  const showPageHeader = screen !== 'placement-test' && screen !== 'study-lesson' && screen !== 'daily-plan';
   const subTitle: Record<Screen, string> = {
     loading: '',
     'placement-intro': 'Diagnóstico de nível',
@@ -1247,6 +1277,7 @@ export function EnglishPage() {
     'placement-result': 'Resultado do diagnóstico',
     'study-dashboard': 'Painel de estudos',
     'study-lesson': '',
+    'daily-plan': '',
   };
 
   return (
@@ -1324,6 +1355,7 @@ export function EnglishPage() {
             setScreen('study-lesson');
           }}
           onRetake={handleRetake}
+          onOpenDailyPlan={() => setScreen('daily-plan')}
         />
       )}
 
@@ -1336,6 +1368,10 @@ export function EnglishPage() {
             setScreen('study-dashboard');
           }}
         />
+      )}
+
+      {screen === 'daily-plan' && user?.name && (
+        <DailyPlanScreen userId={user.name} onBack={() => setScreen('study-dashboard')} />
       )}
     </div>
   );
