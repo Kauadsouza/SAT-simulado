@@ -1,4 +1,5 @@
 import type { CurriculumPhase, WeekInfo } from '../lib/curriculum_types';
+import type { CEFRLevel } from '../lib/english_types';
 
 export const TOTAL_WEEKS = 26;
 
@@ -74,6 +75,13 @@ export function getWeekInfo(weekNumber: number): WeekInfo {
     phase: getPhaseForWeek(clamped),
     isCheckpoint: CHECKPOINT_WEEKS.includes(clamped),
   };
+}
+
+/** Linear interpolation within a phase's CEFR range — first half of the phase uses cefrFrom, second half cefrTo. */
+export function getCefrForWeek(weekNumber: number): CEFRLevel {
+  const phase = getPhaseForWeek(weekNumber);
+  const midpoint = (phase.weekStart + phase.weekEnd) / 2;
+  return weekNumber < midpoint ? phase.cefrFrom : phase.cefrTo;
 }
 
 /** Calendar-driven rollover: the week advances with real days elapsed, capped at TOTAL_WEEKS. A missed day does not reset progress. */
