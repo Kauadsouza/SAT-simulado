@@ -82,6 +82,25 @@ export async function getOrCreateTodayPlan(userId: string): Promise<{ progress: 
   return { progress, plan };
 }
 
+/** Changes intensity for today's plan, preserving completion state of blocks that remain. Also becomes the default for future days. */
+export async function setTodayIntensity(userId: string, intensity: IntensityMode): Promise<EnglishEngineProgress> {
+  const progress = await ensureStarted(userId);
+  progress.intensity = intensity;
+  const date = todayISO();
+  const prevPlan = progress.dailyPlans[date];
+  const weekNumber = getCurrentWeekNumber(progress.startDate!);
+  const phase = getPhaseForWeek(weekNumber);
+  progress.dailyPlans[date] = {
+    date,
+    weekNumber,
+    phaseId: phase.id,
+    intensity,
+    blocks: INTENSITY_BLOCKS[intensity].map((blockId) => prevPlan?.blocks.find((b) => b.blockId === blockId) ?? { blockId, completed: false }),
+  };
+  await saveEngineProgress(progress);
+  return progress;
+}
+
 export async function toggleBlock(userId: string, date: string, blockId: DailyBlockId): Promise<EnglishEngineProgress> {
   const progress = await loadEngineProgress(userId);
   const plan = progress.dailyPlans[date];
