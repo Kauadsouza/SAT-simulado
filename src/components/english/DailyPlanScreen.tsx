@@ -1,17 +1,22 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { DailyPlanState, DailyBlockId, IntensityMode } from '../../lib/english_engine_types';
 import { DAILY_BLOCKS, INTENSITY_LABELS } from '../../data/english_daily_blocks';
-import { getWeekInfo } from '../../data/english_curriculum';
+import { getWeekInfo, getCefrForWeek } from '../../data/english_curriculum';
 import { getOrCreateTodayPlan, toggleBlock, setTodayIntensity, getDueSrsCards } from '../../lib/english_engine_storage';
 import { seedInitialDeckIfEmpty } from '../../data/english_engine_seed';
 import type { SrsCard } from '../../lib/srs';
 import { SrsReviewTrainer } from './SrsReviewTrainer';
+import { ReadingTrainer } from './ReadingTrainer';
+import { checkAiAvailable } from '../../lib/llm_client';
+
+type OpenTrainer = 'srs' | 'reading' | null;
 
 export function DailyPlanScreen({ userId, onBack }: { userId: string; onBack: () => void }) {
   const [plan, setPlan] = useState<DailyPlanState | null>(null);
   const [streak, setStreak] = useState(0);
   const [dueCards, setDueCards] = useState<SrsCard[]>([]);
-  const [reviewing, setReviewing] = useState(false);
+  const [openTrainer, setOpenTrainer] = useState<OpenTrainer>(null);
+  const [aiAvailable, setAiAvailable] = useState(false);
 
   const refresh = useCallback(async () => {
     await seedInitialDeckIfEmpty(userId);
@@ -23,6 +28,7 @@ export function DailyPlanScreen({ userId, onBack }: { userId: string; onBack: ()
 
   useEffect(() => {
     refresh();
+    checkAiAvailable().then(setAiAvailable);
   }, [refresh]);
 
   if (!plan) {
@@ -49,11 +55,11 @@ export function DailyPlanScreen({ userId, onBack }: { userId: string; onBack: ()
     refresh();
   }
 
-  if (reviewing) {
+  if (openTrainer === 'srs') {
     return (
       <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
         <button
-          onClick={() => { setReviewing(false); refresh(); }}
+          onClick={() => { setOpenTrainer(null); refresh(); }}
           className="text-xs font-semibold mb-5"
           style={{ color: 'var(--text-secondary)' }}
         >
@@ -64,7 +70,31 @@ export function DailyPlanScreen({ userId, onBack }: { userId: string; onBack: ()
           cards={dueCards}
           onFinish={async () => {
             await toggleBlock(userId, plan!.date, 'srs_review');
-            setReviewing(false);
+            setOpenTrainer(null);
+            refresh();
+          }}
+        />
+      </div>
+    );
+  }
+
+  if (openTrainer === 'reading') {
+    return (
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+        <button
+          onClick={() => { setOpenTrainer(null); refresh(); }}
+          className="text-xs font-semibold mb-5"
+          style={{ color: 'var(--text-secondary)' }}
+        >
+          ← Sair da leitura
+        </button>
+        <ReadingTrainer
+          userId={userId}
+          date={plan.date}
+          cefr={getCefrForWeek(plan.weekNumber)}
+          onComplete={async () => {
+            await toggleBlock(userId, plan!.date, 'reading');
+            setOpenTrainer(null);
             refresh();
           }}
         />
@@ -82,7 +112,7 @@ export function DailyPlanScreen({ userId, onBack }: { userId: string; onBack: ()
             Semana {plan.weekNumber} de 26 — Fase {info.phase.id}: {info.phase.label}
           </p>
         </div>
-        <div className="text-center shrink-0" style={{ background: 'rgba(255,77,109,0.1)', border: '1px solid rgba(255,77,109,0.25)', borderRadius: 12, padding: '6px 14px' }}>
+        <div style={{ background: 'rgba(255,77,109,0.1)', border: '1px solid rgba(255,77,109,0.25)', borderRadius: 12, padding: '6px 14px', textAlign: 'center' }} className="shrink-0">
           <p style={{ fontSize: '1.1rem', fontWeight: 900, color: '#ff4d6d', lineHeight: 1.2 }}>🔥 {streak}</p>
           <p style={{ fontSize: '0.6rem', fontWeight: 700, color: 'var(--text-secondary)' }}>DIAS</p>
         </div>
@@ -136,6 +166,8 @@ export function DailyPlanScreen({ userId, onBack }: { userId: string; onBack: ()
         {plan.blocks.map((b) => {
           const def = DAILY_BLOCKS[b.blockId];
           const isSrs = b.blockId === 'srs_review';
+          const isReading = b.blockId === 'reading';
+          const hasRealContent = isSrs || (isReading && aiAvailable);
           return (
             <div
               key={b.blockId}
@@ -163,9 +195,11 @@ export function DailyPlanScreen({ userId, onBack }: { userId: string; onBack: ()
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{def.title}</p>
                 <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>{def.instruction}</p>
-                {!isSrs && (
+                {!hasRealContent && (
                   <p className="text-[0.65rem] mt-1 italic" style={{ color: 'var(--text-secondary)', opacity: 0.7 }}>
-                    Conteúdo guiado ainda não disponível nesta fase — marque manualmente quando praticar.
+                    {isReading
+                      ? 'Geração por IA não está configurada neste ambiente — marque manualmente quando praticar.'
+                      : 'Conteúdo guiado ainda não disponível nesta fase — marque manualmente quando praticar.'}
                   </p>
                 )}
               </div>
@@ -173,11 +207,20 @@ export function DailyPlanScreen({ userId, onBack }: { userId: string; onBack: ()
                 <p className="text-xs font-bold mb-1" style={{ color: 'var(--text-secondary)' }}>{def.minutes} min</p>
                 {isSrs && (
                   <button
-                    onClick={() => setReviewing(true)}
+                    onClick={() => setOpenTrainer('srs')}
                     className="text-xs font-bold px-2.5 py-1.5 rounded-lg"
                     style={{ background: 'var(--accent)', color: '#fff' }}
                   >
                     {dueCards.length > 0 ? `Revisar (${dueCards.length})` : 'Revisar'}
+                  </button>
+                )}
+                {isReading && aiAvailable && (
+                  <button
+                    onClick={() => setOpenTrainer('reading')}
+                    className="text-xs font-bold px-2.5 py-1.5 rounded-lg"
+                    style={{ background: 'var(--accent)', color: '#fff' }}
+                  >
+                    Abrir leitura
                   </button>
                 )}
               </div>

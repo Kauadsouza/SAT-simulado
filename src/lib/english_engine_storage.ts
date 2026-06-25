@@ -6,7 +6,8 @@ import { db } from '../db/index';
 import type { EnglishEngineProgress, IntensityMode, DailyPlanState, DailyBlockId } from './english_engine_types';
 import { getCurrentWeekNumber, getPhaseForWeek } from '../data/english_curriculum';
 import { INTENSITY_BLOCKS } from '../data/english_daily_blocks';
-import { type SrsCard, type SrsGrade, scheduleSrsCard, isDue } from './srs';
+import { type SrsCard, type SrsGrade, type SrsItemType, scheduleSrsCard, isDue, newSrsCard } from './srs';
+import type { CEFRLevel } from './english_types';
 
 function todayISO(): string {
   return new Date().toISOString().slice(0, 10);
@@ -135,4 +136,32 @@ export async function reviewSrsCard(userId: string, cardId: string, grade: SrsGr
   const updated = scheduleSrsCard(card, grade, now);
   await db.srsCards.put(updated);
   return updated;
+}
+
+/** Adds generated vocab to the SRS deck, skipping any word that already exists (case-insensitive front match). Returns how many were actually added. */
+export async function mineVocabIntoSrs(
+  userId: string,
+  items: { front: string; back: string; example: string; cefr: CEFRLevel; tags: string[]; type?: SrsItemType }[],
+  now = new Date(),
+): Promise<number> {
+  const existing = await getAllSrsCards(userId);
+  const existingFronts = new Set(existing.map((c) => c.front.toLowerCase().trim()));
+  const fresh = items.filter((i) => !existingFronts.has(i.front.toLowerCase().trim()));
+  const cards = fresh.map((i, idx) =>
+    newSrsCard(
+      {
+        id: `gen-${now.getTime()}-${idx}`,
+        userId,
+        type: i.type ?? 'word',
+        front: i.front,
+        back: i.back,
+        example: i.example,
+        cefr: i.cefr,
+        tags: i.tags,
+      },
+      now,
+    ),
+  );
+  if (cards.length) await addSrsCards(cards);
+  return cards.length;
 }
