@@ -54,7 +54,7 @@ export const CURRICULUM_PHASES: CurriculumPhase[] = [
     cefrTo: 'B2',
     focus: 'Fluência, abstração, velocidade, produção estendida',
     coreGrammar: ['refino de todos os tempos verbais', 'conditionals mistos', 'inversões básicas', 'cleft sentences (intro)', 'hedging/modalidade', 'coesão avançada'],
-    vocabTarget: 3000,
+    vocabTarget: 3500,
     canDo: ['Discutir temas abstratos', 'Produzir fala/texto claros e detalhados', 'Falar com baixa hesitação'],
   },
 ];
