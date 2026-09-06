@@ -64,7 +64,7 @@ export function LoginPage() {
               backgroundClip: 'text',
             }}
           >
-            ARTX English
+            SAT &amp; English Learning
           </h1>
           <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
             Prática de inglês e simulados inspirados no SAT
