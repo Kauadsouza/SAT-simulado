@@ -196,32 +196,32 @@ function ResultsScreen() {
         </div>
 
         {/* Score cards */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {[
-            { label: 'Pontuação Total', value: total, max: 1600, color: scoreColor, glow: `0 0 30px ${scoreColor}44` },
-            { label: 'Reading & Writing', value: rw, max: 800, color: 'var(--success)', glow: '0 0 20px rgba(16,240,160,0.2)' },
-            { label: 'Math', value: math, max: 800, color: 'var(--warning)', glow: '0 0 20px rgba(249,212,35,0.2)' },
-          ].map((item) => (
-            <div
-              key={item.label}
-              className="rounded-2xl p-5 text-center"
-              style={{
-                background: 'var(--bg-card)',
-                border: `1px solid ${item.color}33`,
-                boxShadow: item.glow,
-              }}
-            >
-              <div className="text-3xl font-black mb-1" style={{ color: item.color }}>
-                {item.value}
+        {/* Mobile: total full-width hero + 2-col sub-scores */}
+        <div className="mb-8">
+          <div
+            className="rounded-2xl p-5 text-center mb-3"
+            style={{ background: 'var(--bg-card)', border: `1px solid ${scoreColor}33`, boxShadow: `0 0 30px ${scoreColor}44` }}
+          >
+            <div className="text-4xl sm:text-5xl font-black mb-1" style={{ color: scoreColor }}>{total}</div>
+            <div className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>Pontuação Total</div>
+            <div className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>de 1600</div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { label: 'Reading & Writing', value: rw, max: 800, color: 'var(--success)', glow: '0 0 20px rgba(16,240,160,0.2)' },
+              { label: 'Math', value: math, max: 800, color: 'var(--warning)', glow: '0 0 20px rgba(249,212,35,0.2)' },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className="rounded-2xl p-4 text-center"
+                style={{ background: 'var(--bg-card)', border: `1px solid ${item.color}33`, boxShadow: item.glow }}
+              >
+                <div className="text-2xl sm:text-3xl font-black mb-1" style={{ color: item.color }}>{item.value}</div>
+                <div className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>{item.label}</div>
+                <div className="text-xs mt-0.5" style={{ color: 'var(--text-secondary)' }}>de {item.max}</div>
               </div>
-              <div className="text-xs font-semibold" style={{ color: 'var(--text-primary)' }}>
-                {item.label}
-              </div>
-              <div className="text-xs mt-1" style={{ color: 'var(--text-secondary)' }}>
-                de {item.max}
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
         {/* Domain breakdown */}
@@ -466,12 +466,13 @@ export function ExamPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={() => toggleMarkForReview(question.id)}
-                className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl transition-all"
+                className="flex items-center gap-1.5 text-xs px-3 py-2 sm:py-1.5 rounded-xl transition-all"
                 style={{
                   background: state.markedForReview ? 'rgba(249,212,35,0.12)' : 'var(--bg-card)',
                   border: `1px solid ${state.markedForReview ? 'rgba(249,212,35,0.5)' : 'var(--border-glow)'}`,
                   color: state.markedForReview ? 'var(--warning)' : 'var(--text-secondary)',
                   boxShadow: state.markedForReview ? '0 0 10px rgba(249,212,35,0.15)' : 'none',
+                  minHeight: 36,
                 }}
               >
                 <BookmarkIcon filled={state.markedForReview} />
@@ -485,12 +486,13 @@ export function ExamPage() {
                     setCurrentQuestion(currentQuestionIndex + 1);
                   }
                 }}
-                className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl transition-all"
+                className="flex items-center gap-1.5 text-xs px-3 py-2 sm:py-1.5 rounded-xl transition-all"
                 style={{
                   background: state.dontKnow ? 'rgba(255,77,109,0.12)' : 'var(--bg-card)',
                   border: `1px solid ${state.dontKnow ? 'rgba(255,77,109,0.5)' : 'var(--border-glow)'}`,
                   color: state.dontKnow ? 'var(--danger)' : 'var(--text-secondary)',
                   boxShadow: state.dontKnow ? '0 0 10px rgba(255,77,109,0.15)' : 'none',
+                  minHeight: 36,
                 }}
                 title="Não sei — pular esta questão"
               >
@@ -621,6 +623,7 @@ export function ExamPage() {
           background: 'linear-gradient(90deg, var(--bg-secondary) 0%, color-mix(in srgb, var(--bg-secondary) 95%, var(--accent)) 100%)',
           borderTop: '1px solid var(--border-glow)',
           minHeight: 56,
+          paddingBottom: 'max(8px, env(safe-area-inset-bottom, 0px))',
         }}
       >
         <button

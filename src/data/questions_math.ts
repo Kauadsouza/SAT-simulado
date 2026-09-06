@@ -33,13 +33,13 @@ export const MATH_QUESTIONS: Question[] = [
     difficulty: 'easy',
     type: 'multiple_choice',
     passage: '',
-    prompt: 'Which of the following is equivalent to \\(2(x - 4) + 6 = 3x - 2\\)?',
-    choices: ['\\(x = 2\\)', '\\(x = -2\\)', '\\(x = 0\\)', '\\(x = 6\\)'],
+    prompt: 'What is the solution to \\(3(x - 1) = 2x + 5\\)?',
+    choices: ['\\(x = 8\\)', '\\(x = -8\\)', '\\(x = 2\\)', '\\(x = -2\\)'],
     answer: 'A',
-    explanation: '2x - 8 + 6 = 3x - 2 → 2x - 2 = 3x - 2 → -2 + 2 = 3x - 2x → 0 = x. Wait, let me re-check: 2x - 2 = 3x - 2 → -2 + 2 = 3x - 2x → 0 = x. Hmm, so x = 0 is actually correct. Let me fix this.',
+    explanation: '3x − 3 = 2x + 5 → 3x − 2x = 5 + 3 → x = 8.',
     translation: {
-      words: { equivalent: 'equivalente' },
-      prompt_pt: 'Qual das alternativas é equivalente à equação \\(2(x - 4) + 6 = 3x - 2\\)?'
+      words: { solution: 'solução' },
+      prompt_pt: 'Qual é a solução de \\(3(x - 1) = 2x + 5\\)?'
     }
   },
   {
@@ -138,13 +138,13 @@ export const MATH_QUESTIONS: Question[] = [
     difficulty: 'medium',
     type: 'spr',
     passage: '',
-    prompt: 'A taxi charges a flat fee of $3.50 plus $2.25 per mile. If a ride cost $17.75, how many miles was the trip?',
+    prompt: 'A plumber charges a flat fee of $45 plus $60 per hour. A customer paid $225. How many hours did the plumber work?',
     choices: [],
-    answer: '6',
-    explanation: '3.50 + 2.25m = 17.75 → 2.25m = 14.25 → m = 14.25 / 2.25 = 6.33... Hmm, let me recalculate: 2.25 × 6 = 13.50; 13.50 + 3.50 = 17.00. 2.25 × 7 = 15.75; 15.75 + 3.50 = 19.25. Let me adjust: $2.25m + $3.50 = $17.75 → 2.25m = 14.25 → m = 6.33. Not integer. Let me use: flat $2 + $2.50/mile → 2 + 2.5m = 17 → 2.5m = 15 → m = 6.',
+    answer: '3',
+    explanation: '45 + 60h = 225 → 60h = 180 → h = 3 hours.',
     translation: {
-      words: { charges: 'cobra', flat: 'fixo', fee: 'taxa', mile: 'milha', trip: 'viagem' },
-      prompt_pt: 'Um táxi cobra uma taxa fixa de $2,00 mais $2,50 por milha. Se uma viagem custou $17,00, quantas milhas foi o percurso?'
+      words: { charges: 'cobra', flat: 'fixo', fee: 'taxa', hour: 'hora', paid: 'pagou', plumber: 'encanador' },
+      prompt_pt: 'Um encanador cobra uma taxa fixa de $45 mais $60 por hora. Um cliente pagou $225. Quantas horas o encanador trabalhou?'
     }
   },
   {
@@ -492,9 +492,9 @@ export const MATH_QUESTIONS: Question[] = [
     type: 'multiple_choice',
     passage: 'The scores on a math test were: 72, 85, 90, 88, 76, 85, 93, 85, 79, and 67.',
     prompt: 'What is the median score?',
-    choices: ['86.5', '85', '82', '85.5'],
+    choices: ['85', '86.5', '82', '85.5'],
     answer: 'A',
-    explanation: 'Sorted: 67, 72, 76, 79, 85, 85, 85, 88, 90, 93. With 10 values, median = average of 5th and 6th: (85 + 85)/2 = 85. Hmm, that\'s 85. Let me recalculate: 5th value = 85, 6th value = 85. Median = 85.',
+    explanation: 'Sorted (10 values): 67, 72, 76, 79, 85, 85, 85, 88, 90, 93. With an even count, the median is the average of the 5th and 6th values: (85 + 85) ÷ 2 = 85.',
     translation: {
       words: { scores: 'notas', median: 'mediana' },
       passage_pt: 'As notas em uma prova de matemática foram: 72, 85, 90, 88, 76, 85, 93, 85, 79 e 67.',
@@ -546,14 +546,14 @@ export const MATH_QUESTIONS: Question[] = [
     skill: 'probability',
     difficulty: 'hard',
     type: 'multiple_choice',
-    passage: 'A company surveyed 200 employees. Of those, 120 use public transportation, 90 own a car, and 40 use both. Employees who use neither public transportation nor own a car use bikes.',
+    passage: 'A company surveyed 200 employees. Of those, 120 use public transportation, 90 own a car, and 40 use both. Employees who use neither mode use bikes.',
     prompt: 'What fraction of employees use bikes?',
-    choices: ['\\(\\frac{3}{10}\\)', '\\(\\frac{1}{4}\\)', '\\(\\frac{1}{5}\\)', '\\(\\frac{7}{20}\\)'],
+    choices: ['\\(\\frac{3}{20}\\)', '\\(\\frac{1}{4}\\)', '\\(\\frac{3}{10}\\)', '\\(\\frac{7}{20}\\)'],
     answer: 'A',
-    explanation: 'By inclusion-exclusion: those using transit or cars = 120 + 90 - 40 = 170. Bike users = 200 - 170 = 30. Fraction = 30/200 = 3/20. Wait, that gives 3/20 not 3/10. Let me recalculate: 30/200 = 3/20.',
+    explanation: 'By inclusion-exclusion: employees using transit or car = 120 + 90 − 40 = 170. Bike users = 200 − 170 = 30. Fraction = 30/200 = 3/20.',
     translation: {
       words: { surveyed: 'pesquisou', employees: 'funcionários', public: 'público', transportation: 'transporte', fraction: 'fração', bikes: 'bicicletas' },
-      passage_pt: 'Uma empresa pesquisou 200 funcionários. Desses, 120 usam transporte público, 90 têm carro e 40 usam ambos.',
+      passage_pt: 'Uma empresa pesquisou 200 funcionários. Desses, 120 usam transporte público, 90 têm carro e 40 usam ambos. Os que não usam nenhum dos dois usam bicicleta.',
       prompt_pt: 'Que fração dos funcionários usa bicicleta?'
     }
   },

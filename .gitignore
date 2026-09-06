@@ -25,5 +25,10 @@ dist-ssr
 
 .vercel
 
+# Generated test and coverage output
+/test-artifacts/
+/playwright-report/
+/coverage/
+
 # Local env vars (LLM proxy keys) — never commit
 .env

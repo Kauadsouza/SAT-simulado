@@ -13,7 +13,7 @@ function tokenize(text: string): string[] {
   return text.split(/(\s+)/).flatMap((chunk) => {
     if (/^\s+$/.test(chunk)) return [chunk];
     // Split by punctuation keeping them
-    return chunk.split(/([.,;:!?'"()\[\]—–-])/).filter(Boolean);
+    return chunk.split(/([.,;:!?'"()[\]—–-])/).filter(Boolean);
   });
 }
 

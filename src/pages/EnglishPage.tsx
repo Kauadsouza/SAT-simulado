@@ -107,8 +107,8 @@ function PlacementIntro({ onStart, isRetake }: { onStart: () => void; isRetake: 
         </h1>
         <p className="text-center mb-6" style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
           {isRetake
-            ? 'Seu histórico de lições será resetado. Pronto para começar do zero?'
-            : 'Descubra seu nível de inglês em poucos minutos — de A1 a C2.'}
+            ? 'Refaça a estimativa inicial. Suas lições concluídas e seu histórico serão preservados.'
+            : 'Faça uma estimativa de leitura e gramática para escolher as lições. Este teste não avalia fala e escuta nem certifica um nível CEFR.'}
         </p>
 
         {/* Info chips */}
@@ -518,7 +518,7 @@ function StudyDashboard({
               {CEFR_LABELS[level]}
             </p>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>Seu nível diagnosticado</p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem' }}>Estimativa para as lições de leitura e gramática</p>
         </div>
 
         <div className="flex gap-3">

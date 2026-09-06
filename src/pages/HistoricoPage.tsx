@@ -50,7 +50,7 @@ function SessionDetail({ session, onBack }: { session: ExamSession; onBack: () =
         ← Voltar ao histórico
       </button>
 
-      <div className="flex items-start justify-between mb-6">
+      <div className="flex items-start justify-between gap-3 mb-6 flex-wrap">
         <div>
           <h2
             className="text-2xl font-black tracking-tight"
