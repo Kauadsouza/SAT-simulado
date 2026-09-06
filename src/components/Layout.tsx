@@ -10,7 +10,7 @@ export function Layout() {
   return <div className="learn-shell">
     <a className="learn-skip" href="#study-content">Pular para o conteúdo</a>
     <header className="learn-header">
-      <div className="learn-top"><NavLink to="/" className="learn-brand" aria-label="ARTX English, início"><span className="learn-logo">a<span>e</span></span><span>ARTX <b>English</b><small>SEU ESPAÇO DE APRENDIZADO</small></span></NavLink>
+      <div className="learn-top"><NavLink to="/" className="learn-brand" aria-label="SAT & English Learning, início"><span className="learn-logo">s<span>e</span></span><span>SAT &amp; <b>English Learning</b><small>SEU ESPAÇO DE APRENDIZADO</small></span></NavLink>
         <div className="learn-account"><span>{user?.name}</span><button onClick={toggleTheme} aria-label={theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}>{theme === 'dark' ? '☀' : '☾'}</button><button onClick={logout}>Sair</button></div>
       </div>
       <nav className="learn-tabs" aria-label="Áreas de estudo">{nav.map(([to, label]) => {
@@ -19,6 +19,6 @@ export function Layout() {
       })}</nav>
     </header>
     <main id="study-content" className="learn-main"><LearningWorkspace><Outlet /></LearningWorkspace></main>
-    <footer className="learn-footer">Um pouco de inglês, com atenção, de cada vez.<span>ARTX English · estudo independente</span></footer>
+    <footer className="learn-footer">Um pouco de inglês, com atenção, de cada vez.<span>SAT &amp; English Learning · estudo independente</span></footer>
   </div>;
 }
