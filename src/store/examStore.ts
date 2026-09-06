@@ -157,7 +157,7 @@ export const useExamStore = create<ExamStore>((set, get) => ({
     let nextPhase: ExamPhase = session.phase;
     let nextModuleId: ModuleId | null = null;
     let nextTimeSec = 0;
-    let updatedSession = { ...session };
+    const updatedSession = { ...session };
     updatedSession.modules = { ...session.modules, [currentModuleId]: updatedModule };
 
     if (currentModuleId === 'rw1') {

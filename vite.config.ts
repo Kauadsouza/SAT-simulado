@@ -1,5 +1,5 @@
 import { readFileSync, existsSync } from 'fs'
-import { defineConfig, type Plugin } from 'vite'
+import { defineConfig, loadEnv, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
@@ -25,6 +25,7 @@ function apiDevMiddleware(): Plugin {
     name: 'api-generate-dev-middleware',
     configureServer(server) {
       loadDotEnv()
+      for (const [key, value] of Object.entries(loadEnv('development', process.cwd(), ''))) if (!(key in process.env)) process.env[key] = value
       server.middlewares.use('/api/generate', async (req, res) => {
         const { default: handler } = await server.ssrLoadModule('/api/generate.ts')
         await handler(req, res)

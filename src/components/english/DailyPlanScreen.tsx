@@ -27,7 +27,7 @@ export function DailyPlanScreen({ userId, onBack }: { userId: string; onBack: ()
   }, [userId]);
 
   useEffect(() => {
-    refresh();
+    void Promise.resolve().then(refresh);
     checkAiAvailable().then(setAiAvailable);
   }, [refresh]);
 

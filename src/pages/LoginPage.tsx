@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAppStore } from '../store/appStore';
 
 export function LoginPage() {
-  const [name, setName] = useState('Nathaly');
+  const [name, setName] = useState('');
   const { login } = useAppStore();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -64,10 +64,10 @@ export function LoginPage() {
               backgroundClip: 'text',
             }}
           >
-            SAT Simulator
+            ARTX English
           </h1>
           <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-            Treino digital fiel ao SAT oficial
+            Prática de inglês e simulados inspirados no SAT
           </p>
         </div>
 
@@ -117,7 +117,7 @@ export function LoginPage() {
           </button>
 
           <p className="text-center text-xs mt-4" style={{ color: 'var(--text-secondary)' }}>
-            Sem senha. Histórico salvo localmente por nome.
+            Escolha o perfil do histórico. A conexão com a nuvem aparece no topo.
           </p>
         </form>
 

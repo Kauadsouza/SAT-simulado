@@ -45,7 +45,7 @@ export function ReadingTrainer({
   }, [userId, date, cefr]);
 
   useEffect(() => {
-    load();
+    void Promise.resolve().then(load);
   }, [load]);
 
   if (phase === 'loading') {

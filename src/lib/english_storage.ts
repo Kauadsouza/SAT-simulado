@@ -48,11 +48,11 @@ export async function completeLessonForUser(
   const progress = await loadEnglishProgress(userId);
   const existing = progress.lessonStatus[lessonId];
   progress.lessonStatus[lessonId] = {
-    completed: score >= 0.7,
+    completed: Boolean(existing?.completed) || score >= 0.7,
     bestScore: Math.max(score, existing?.bestScore ?? 0),
     completedAt: score >= 0.7 ? new Date().toISOString() : existing?.completedAt,
   } as LessonStatus;
-  if (score >= 0.7) progress.xp += xpGained;
+  if (score >= 0.7 && !existing?.completed) progress.xp += xpGained;
   progress.streak = updateStreak(progress.streak);
   await saveEnglishProgress(progress);
   return progress;
@@ -63,8 +63,6 @@ export async function resetPlacement(userId: string): Promise<UserEnglishProgres
   progress.placement = null;
   progress.placementCompleted = false;
   progress.currentLevel = null;
-  progress.lessonStatus = {};
-  progress.xp = 0;
   await saveEnglishProgress(progress);
   return progress;
 }

@@ -3,6 +3,7 @@
  * /api/generate (a Vercel serverless function in production, a Vite dev middleware locally)
  * so the API key never reaches the public bundle.
  */
+import { getStudyCloud } from './cloud';
 import type { LlmMessage } from './llm_types';
 
 export class LlmError extends Error {
@@ -18,10 +19,10 @@ export async function chatComplete(messages: LlmMessage[], opts: { temperature?:
   try {
     res = await fetch('/api/generate', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getStudyCloud().token ?? ''}` },
       body: JSON.stringify({ messages, temperature: opts.temperature ?? 0.7 }),
     });
-  } catch (e) {
+  } catch {
     throw new LlmError('Não foi possível conectar ao servidor.', 'network_error');
   }
   const data = await res.json().catch(() => ({}));

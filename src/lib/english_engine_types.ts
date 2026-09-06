@@ -1,4 +1,5 @@
 import type { CEFRLevel } from './english_types';
+import type { LearningHubState } from './learning-hub';
 
 export type IntensityMode = 'lite' | 'completo' | 'intensivo';
 
@@ -35,6 +36,7 @@ export interface CheckpointResult {
 }
 
 export interface EnglishEngineProgress {
+  learningHub?: LearningHubState;
   userId: string;
   startDate: string | null; // ISO date, set on first visit to the daily engine
   intensity: IntensityMode;

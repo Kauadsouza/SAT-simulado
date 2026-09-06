@@ -6,9 +6,10 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist', '.claude/**', 'node_modules/**', 'screenshot_*.cjs']),
   {
     files: ['**/*.{ts,tsx}'],
+    rules: { '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }] },
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
@@ -16,6 +17,7 @@ export default defineConfig([
       reactRefresh.configs.vite,
     ],
     languageOptions: {
+      parserOptions: { tsconfigRootDir: import.meta.dirname },
       globals: globals.browser,
     },
   },

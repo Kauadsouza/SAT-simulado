@@ -1,0 +1,11 @@
+
+.claude
+.env
+.env.*
+node_modules
+.next
+out
+dist
+test-artifacts
+english-desktop.png
+tests

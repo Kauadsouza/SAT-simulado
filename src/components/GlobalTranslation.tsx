@@ -22,8 +22,8 @@ function getWordAtPoint(x: number, y: number): string {
   let range: Range | null = null;
   if (document.caretRangeFromPoint) {
     range = document.caretRangeFromPoint(x, y);
-  } else if ((document as any).caretPositionFromPoint) {
-    const pos = (document as any).caretPositionFromPoint(x, y);
+  } else if (document.caretPositionFromPoint) {
+    const pos = document.caretPositionFromPoint(x, y);
     if (pos) {
       range = document.createRange();
       range.setStart(pos.offsetNode, pos.offset);
@@ -34,7 +34,15 @@ function getWordAtPoint(x: number, y: number): string {
   if (!range) return '';
 
   // Expand range to word boundaries (non-standard but supported in Chrome/Firefox)
-  (range as any).expand('word');
+  const expandable = range as Range & { expand?: (unit: string) => void };
+  if (expandable.expand) expandable.expand('word');
+  else if (range.startContainer.nodeType === Node.TEXT_NODE) {
+    const text = range.startContainer.textContent ?? '';
+    let start = range.startOffset, end = start;
+    while (start > 0 && /[\p{L}'-]/u.test(text[start - 1])) start--;
+    while (end < text.length && /[\p{L}'-]/u.test(text[end])) end++;
+    range.setStart(range.startContainer, start); range.setEnd(range.startContainer, end);
+  }
   return range.toString().trim();
 }
 
@@ -64,6 +72,10 @@ export function GlobalTranslation() {
 
   useEffect(() => {
     const onContextMenu = (e: MouseEvent) => {
+      if (e.target instanceof Element && e.target.closest('input, textarea, [contenteditable], [data-private]')) return;
+      const selectionNode = window.getSelection()?.anchorNode;
+      const selectionElement = selectionNode instanceof Element ? selectionNode : selectionNode?.parentElement;
+      if (selectionElement?.closest('input, textarea, [contenteditable], [data-private]')) return;
       const word = getWordAtPoint(e.clientX, e.clientY);
       if (!word) return;
 
