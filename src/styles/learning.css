@@ -123,3 +123,37 @@
 @media(max-width:760px) { .learn-top,.learn-tabs,.learn-main,.learn-footer { padding-inline:18px; }.learn-top { padding-block:17px; }.learn-brand { font-size:19px; }.learn-brand small { font-size:7px; }.learn-account>span { display:none; }.learn-tabs { gap:25px; }.learn-tabs a { font-size:12px; }.learn-variant-switch { grid-template-columns:1fr; gap:14px; padding:17px; }.learn-page { gap:24px; }.learn-hero { grid-template-columns:1fr; padding-top:15px; gap:25px; }.learn-hero h1 { font-size:39px; }.learn-hero-board { padding:23px; }.learn-big-number { font-size:57px; }.learn-wave { height:95px; overflow:hidden; }.learn-wave i { max-height:78px; }.learn-stats { gap:15px; grid-template-columns:1fr 1fr; padding:18px 0; }.learn-stats>div { padding:0!important; border:0; }.learn-stats>div:last-child { grid-column:1/-1; border-top:1px solid var(--border); padding-top:13px!important; }.learn-stats .learn-date { font-size:18px; padding:0; }.learn-columns { grid-template-columns:1fr; }.learn-form-grid { grid-template-columns:repeat(2,1fr); }.learn-topic-grid { grid-template-columns:repeat(2,1fr); }.learn-topic-grid button { flex-direction:row; text-align:left; }.learn-practice-layout { grid-template-columns:1fr; }.learn-lesson-list { position:static; display:grid; grid-template-columns:1fr 1fr; gap:5px; }.learn-lesson-list>.learn-eyebrow,.learn-lesson-list>.learn-button,.learn-lesson-list>small { grid-column:1/-1; }.learn-banner { flex-wrap:wrap; }.learn-banner>div { min-width:200px; }.learn-exam-hero { padding:25px; }.learn-exam-hero>strong { display:none; }.learn-exam-hero h2 { font-size:30px; }.learn-footer { flex-direction:column; gap:5px; }.learn-checklist .learn-task-symbol { display:none; } }
 @media(max-width:500px) { .learn-course-grid,.learn-milestones,.learn-roadmap { grid-template-columns:1fr; }.learn-card { padding:20px; }.learn-course { padding:0; }.learn-variant-options { grid-template-columns:1fr; }.learn-variant-options>button { min-height:64px; }.learn-hero h1 { font-size:34px; }.learn-account { gap:6px; }.learn-account button { padding:6px 9px; }.learn-logo { width:39px; height:39px; }.learn-heading h1 { font-size:31px; }.learn-page h2 { font-size:22px; }.learn-between { gap:8px; }.learn-section-head { flex-wrap:wrap; }.learn-note .learn-between { align-items:flex-start; }.learn-note .learn-between button { margin-left:auto; }.learn-stats strong { font-size:25px; }.learn-exam-hero { padding:24px; }.learn-form-grid { gap:10px; }.learn-cover { height:170px; }.learn-button { padding:10px 13px; } }
 @media(prefers-reduced-motion:reduce) { .learn-shell * { animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
+
+/* Visual study workspace: readable controls and progressive disclosure. */
+.learn-variant-switch { grid-template-columns:auto minmax(0,580px); justify-content:space-between; padding:12px 16px; gap:16px; }
+.learn-variant-options>button { min-height:52px; padding:8px 12px; }
+.learn-variant-options strong { font-size:14px; }
+.learn-hero-compact { padding-block:4px; gap:28px; }
+.learn-hero-compact h1 { font-size:clamp(32px,4vw,46px); }
+.learn-hero-compact p { margin:14px 0 20px; }
+.learn-progress-ring { width:160px; height:160px; border-radius:50%; display:grid; place-items:center; margin:18px auto; }
+.learn-progress-ring>strong { display:flex; flex-direction:column; justify-content:center; align-items:center; width:132px; height:132px; border-radius:50%; background:#bfdfd0; font-size:46px; line-height:1.2; }
+.learn-progress-ring small { color:#36594d; font-size:14px; font-weight:500; }
+.learn-page p,.learn-page input:not([type=checkbox]):not([type=radio]),.learn-page textarea,.learn-page select { font-size:16px; }
+.learn-page label,.learn-page summary,.learn-button,.learn-button.small,.learn-filter button,.learn-tabs a,.learn-text-link,.learn-topic-grid strong,.learn-lesson-list>button { font-size:14px; }
+.learn-page small,.learn-eyebrow,.learn-pill,.learn-save,.learn-brand small,.learn-footer,.learn-course .learn-eyebrow,.learn-course p,.learn-next strong,.learn-next p,.learn-checklist p,.learn-lesson-list>button>span,.learn-cover>span,.learn-cover>div,.learn-stats>div>span,.learn-week-bars>div { font-size:12px; }
+.learn-button,.learn-button.small,.learn-filter button,.learn-account button { min-height:44px; }
+.learn-page summary { min-height:44px; padding-block:10px; margin-bottom:0; font-weight:600; }
+.learn-page details[open]>summary { margin-bottom:12px; }
+.learn-page details.learn-card { margin:0; padding:12px 22px; }
+.learn-course-body>details { margin:12px 0; }
+.learn-cover { height:110px; }
+.learn-cover>strong { font-size:52px; top:27px; }
+.learn-course h2 { font-size:22px; }
+.learn-checklist>div { padding:16px 0; }
+.learn-checklist a { font-size:17px; }
+.learn-checklist .learn-task-symbol { display:grid; width:44px; height:44px; }
+.learn-stepper { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin:24px 0; }
+.learn-stepper button { min-height:64px; display:flex; align-items:center; justify-content:center; gap:8px; border:1px solid var(--border); border-radius:12px; padding:8px; font-size:14px; cursor:pointer; color:var(--learn-muted); }
+.learn-stepper button span { width:24px; height:24px; display:grid; place-items:center; border:1px solid currentColor; border-radius:50%; }
+.learn-stepper button[aria-current=step] { background:var(--learn-green); color:var(--learn-ink); border-color:var(--learn-green); font-weight:700; }
+.learn-page [hidden] { display:none!important; }
+.learn-quiz legend { font-size:16px; }
+.learn-choice { min-height:48px; }
+.learn-source { font-size:12px!important; }
+@media(max-width:760px) { .learn-variant-switch { grid-template-columns:1fr; gap:8px; }.learn-variant-options { grid-template-columns:1fr 1fr; }.learn-variant-code { width:28px; height:30px; }.learn-variant-options>button { gap:7px; }.learn-hero-compact { grid-template-columns:1fr; }.learn-hero-board { padding:18px; }.learn-progress-ring { width:120px; height:120px; margin:12px auto; }.learn-progress-ring>strong { width:98px; height:98px; font-size:36px; }.learn-progress-ring small { font-size:12px; }.learn-checklist p { display:none; }.learn-checklist a { font-size:15px; }.learn-stepper button { flex-direction:column; gap:4px; }.learn-brand small { letter-spacing:.3px; }.learn-topic-grid button { min-height:76px; } }
