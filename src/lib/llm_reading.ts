@@ -1,5 +1,6 @@
 import type { CEFRLevel } from './english_types';
 import { chatComplete, extractJson } from './llm_client';
+import type { EnglishVariant } from './learning-hub';
 
 export interface ReadingQuestion {
   prompt: string;
@@ -32,10 +33,14 @@ const WORD_RANGE: Record<CEFRLevel, string> = {
 const SYSTEM_PROMPT =
   'Você é um gerador de material didático de inglês como segunda língua, especializado em textos graduados calibrados por nível CEFR (i+1: levemente acima do nível do aluno, mas compreensível). Responda SEMPRE em JSON puro, sem markdown, sem comentários antes ou depois.';
 
-function buildPrompt(cefr: CEFRLevel, topicHint?: string): string {
+function buildPrompt(cefr: CEFRLevel, variant: EnglishVariant, topicHint?: string): string {
+  const variety = variant === 'british'
+    ? 'inglês britânico contemporâneo: ortografia, vocabulário e contexto do Reino Unido; quando natural, use situações de Oxford, estudo, transporte e vida cotidiana'
+    : 'inglês americano contemporâneo: ortografia, vocabulário e contexto dos Estados Unidos';
   return `Gere uma passagem de leitura graduada em inglês para um estudante de nível CEFR ${cefr}.
 
 Requisitos:
+- Variedade obrigatória: ${variety}. Não misture ortografias ou escolhas regionais dentro do mesmo material.
 - Comprimento: ${WORD_RANGE[cefr]} palavras.
 - Vocabulário e estruturas gramaticais apropriados para o nível ${cefr} — nada significativamente além disso.
 - Tema: ${topicHint ?? 'cotidiano, interessante e culturalmente neutro'}.
@@ -64,11 +69,11 @@ function validate(content: ReadingContent): void {
   if (!Array.isArray(content.vocab) || content.vocab.length === 0) throw new Error('vocab ausente ou vazio');
 }
 
-export async function generateReadingContent(cefr: CEFRLevel, topicHint?: string): Promise<ReadingContent> {
+export async function generateReadingContent(cefr: CEFRLevel, variant: EnglishVariant = 'british', topicHint?: string): Promise<ReadingContent> {
   const raw = await chatComplete(
     [
       { role: 'system', content: SYSTEM_PROMPT },
-      { role: 'user', content: buildPrompt(cefr, topicHint) },
+      { role: 'user', content: buildPrompt(cefr, variant, topicHint) },
     ],
     { temperature: 0.8 },
   );

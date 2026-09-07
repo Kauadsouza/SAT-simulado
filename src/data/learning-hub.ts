@@ -1,4 +1,4 @@
-export const RESEARCH_DATE = '05/09/2026';
+export const RESEARCH_DATE = '07/09/2026';
 export const englishCourses = [
   { id: 'voa', provider: 'VOA Learning English', title: "Let’s Learn English — Level 1", level: 'A1', skill: 'Curso completo', mark: 'Aa', color: 'peach', description: 'Sua trilha principal: 52 lições com vídeo, vocabulário e atividades para começar do básico.', action: 'Comece na Lesson 1: Welcome! Assista a um trecho, repita e faça a atividade. Uma lição pode ocupar vários dias.', url: 'https://learningenglish.voanews.com/p/5644.html', type: 'Curso gratuito' },
   { id: 'bc-listen-a1', provider: 'British Council', title: 'Entenda o inglês do dia a dia', level: 'A1', skill: 'Listening', mark: '♫', color: 'mint', description: 'Áudios curtos sobre situações comuns, com preparação e exercícios de compreensão.', action: 'Escolha Ordering in a café. Ouça uma vez sem texto, responda e ouça de novo.', url: 'https://learnenglish.britishcouncil.org/free-resources/listening/a1', type: 'Trilha gratuita' },

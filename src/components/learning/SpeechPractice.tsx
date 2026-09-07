@@ -1,22 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 
-export function SpeechPractice({ text }: { text: string }) {
+export function SpeechPractice({ text, locale = 'en-GB' }: { text: string; locale?: 'en-GB' | 'en-US' }) {
   const [speaking, setSpeaking] = useState(false);
   const [slow, setSlow] = useState(true);
   const [message, setMessage] = useState('');
-  useEffect(() => () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }, [text]);
+  useEffect(() => () => { if ('speechSynthesis' in window) window.speechSynthesis.cancel(); }, [text, locale]);
   function listen() {
     if (!('speechSynthesis' in window)) { setMessage('Este navegador não oferece leitura em voz alta. Use o texto ou um áudio dos cursos.'); return; }
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
     const voices = window.speechSynthesis.getVoices();
-    utterance.voice = voices.find(v => v.lang === 'en-GB' && v.localService) ?? voices.find(v => v.lang.startsWith('en') && v.localService) ?? voices.find(v => v.lang === 'en-GB') ?? null;
-    utterance.lang = 'en-GB'; utterance.rate = slow ? 0.8 : 1;
+    const target = locale.toLowerCase();
+    utterance.voice = voices.find(v => v.lang.toLowerCase() === target && v.localService) ?? voices.find(v => v.lang.toLowerCase() === target) ?? voices.find(v => v.lang.toLowerCase().startsWith('en') && v.localService) ?? voices.find(v => v.lang.toLowerCase().startsWith('en')) ?? null;
+    utterance.lang = locale; utterance.rate = slow ? 0.8 : 1;
     utterance.onend = () => setSpeaking(false);
     utterance.onerror = event => { setSpeaking(false); if (!['canceled', 'interrupted'].includes(event.error)) setMessage('O áudio não iniciou. Verifique as vozes em inglês do dispositivo ou use os áudios dos cursos.'); };
     setMessage(''); setSpeaking(true); window.speechSynthesis.speak(utterance);
   }
-  return <div className="learn-speech"><div className="learn-actions"><button className="learn-button primary" onClick={listen}>▶ {speaking ? 'Ouvir novamente' : 'Ouvir em inglês'}</button>{speaking && <button className="learn-button" onClick={() => { window.speechSynthesis.cancel(); setSpeaking(false); }}>Parar áudio</button>}<label className="learn-check-label"><input type="checkbox" checked={slow} onChange={e => setSlow(e.target.checked)} /> Mais devagar</label></div><small>Voz sintetizada do navegador. Combine com os áudios naturais dos cursos.</small>{message && <p role="status">{message}</p>}</div>;
+  return <div className="learn-speech"><div className="learn-actions"><button className="learn-button primary" onClick={listen}>▶ {speaking ? 'Ouvir novamente' : `Ouvir em inglês ${locale === 'en-GB' ? 'britânico' : 'americano'}`}</button>{speaking && <button className="learn-button" onClick={() => { window.speechSynthesis.cancel(); setSpeaking(false); }}>Parar áudio</button>}<label className="learn-check-label"><input type="checkbox" checked={slow} onChange={e => setSlow(e.target.checked)} /> Mais devagar</label></div><small>Voz {locale} sintetizada pelo navegador. Se o dispositivo não tiver essa voz, ele usará outra voz em inglês; combine com os áudios naturais dos cursos.</small>{message && <p role="status">{message}</p>}</div>;
 }
 
 export function VoiceRecorder() {

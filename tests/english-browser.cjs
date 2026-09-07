@@ -18,11 +18,12 @@ const fs = require('node:fs');
     if (await name.isVisible()) { await name.fill('English browser verification'); await page.getByRole('button', { name: 'Entrar →' }).click(); }
     await page.getByRole('navigation', { name: 'Áreas de estudo' }).waitFor();
   }
-  const headings = { 'Meu plano': 'Mais confiança. Uma conversa de cada vez.', 'Cursos grátis': 'Um caminho para começar. Espaço para ir além.', 'Praticar': 'Ouvir. Entender. Usar. Lembrar.', 'Conversação': 'Seu inglês merece sair do papel.', 'SAT': 'Seu espaço para o SAT continua aqui.', 'ACT': 'Conheça o ACT, no formato atual.', 'TOEFL': 'Inglês para entender e participar.' };
-  async function tab(name) { await page.getByRole('navigation').getByRole('link', { name, exact: true }).click(); await page.getByRole('heading', { name: headings[name], exact: true }).waitFor(); }
+  const headings = { 'Meu plano': /Mais confiança/, 'Cursos grátis': /Sua rota para estudar/, 'Praticar': /Ouvir\. Entender\. Usar\. Lembrar\./, 'Conversação': /Seu inglês merece sair do papel\./, 'SAT': /Seu espaço para o SAT continua aqui\./, 'ACT': /Conheça o ACT, no formato atual\./, 'TOEFL': /Inglês para entender e participar\./ };
+  async function tab(name) { await page.getByRole('navigation').getByRole('link', { name, exact: true }).click(); await page.getByRole('heading', { name: headings[name] }).waitFor(); }
   try {
     await page.goto(base); await localAccess();
-    await page.getByRole('heading', { name: 'Mais confiança. Uma conversa de cada vez.' }).waitFor();
+    await page.getByRole('heading', { name: /Mais confiança/ }).waitFor();
+    assert.equal(await page.getByRole('radio', { name: /Inglês britânico/ }).getAttribute('aria-checked'), 'true');
     await page.screenshot({ path: path.join(artifacts, 'home-desktop.png'), fullPage: true });
     await page.getByRole('button', { name: 'Ajustar meu plano' }).click();
     await page.getByLabel('Tempo por sessão').selectOption('15');
@@ -45,6 +46,13 @@ const fs = require('node:fs');
     assert.equal(await page.locator('.learn-course').first().getByLabel('Onde parei').inputValue(), 'Lesson 2 — repeat the introductions.');
     await page.getByRole('button', { name: 'Em andamento', exact: true }).click();
     assert.equal(await page.locator('.learn-course').count(), 1);
+    await page.getByRole('button', { name: 'Todos', exact: true }).click();
+    await page.getByRole('radio', { name: /Inglês americano/ }).click();
+    await page.getByRole('heading', { name: /Um caminho americano/ }).waitFor();
+    assert.equal(await page.locator('.learn-course').count(), 8);
+    await page.getByRole('heading', { name: /Let’s Learn English/ }).waitFor();
+    await page.getByRole('radio', { name: /Inglês britânico/ }).click();
+    await page.getByRole('heading', { name: /Sua rota para estudar/ }).waitFor();
     await tab('Praticar');
     await page.getByRole('radio', { name: 'Music and video games', exact: true }).check();
     await page.getByRole('radio', { name: 'At the library', exact: true }).check();

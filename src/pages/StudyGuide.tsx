@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import { Note, PageHeading, useLearningWorkspace } from '../components/learning/Workspace';
+import { ENGLISH_VARIANTS } from '../lib/learning-hub';
 
-const stages = [
+const americanStages = [
   { title: 'Começar: suas primeiras frases', subtitle: 'Parte 1 · construa a base', steps: [
     ['Abra Cursos grátis e comece na Lesson 1: Welcome! da VOA.', 'Assista a um trecho curto. Ouça de novo, pause e repita. Termine as atividades dessa lição antes de seguir para a Lesson 2.'],
     ['Em Praticar, faça “Uma primeira conversa”.', 'Ouça ou leia, responda às perguntas e escreva três frases sobre você. Confira a explicação mesmo quando acertar.'],
@@ -22,15 +23,40 @@ const stages = [
   ], criterion: 'Continue ampliando os temas no seu ritmo. As práticas B1 e B2 ficam disponíveis como próximos desafios. SAT, ACT e TOEFL entram quando você decidir preparar uma prova; não são uma etapa obrigatória para aprender o básico.', links: [['/praticar', 'Experimentar as práticas A2'], ['/cursos', 'Abrir leitura e escrita'], ['/', 'Revisar meu plano']] },
 ] as const;
 
+const britishStages = [
+  { title: 'Começar: suas primeiras frases no Reino Unido', subtitle: 'Parte 1 · construa a base britânica', steps: [
+    ['Abra Cursos grátis e comece por “Meeting new people”.', 'No British Council, assista a um trecho curto, pause e repita. Depois use as mesmas frases na prática interna.'],
+    ['Em Praticar, faça “Uma primeira conversa”.', 'Ouça com a voz en-GB, responda às perguntas e escreva três frases sobre você. Confira a explicação mesmo quando acertar.'],
+    ['Em Conversação, escolha “Conhecer alguém”.', 'Repita a frase inicial e tente uma conversa de cinco minutos. O contexto pede ao ChatGPT vocabulário e pronúncia britânicos.'],
+    ['Guarde uma frase e anote onde parou.', 'Use “Guardar frase para revisar” e registre o nome da aula ou o minuto do vídeo para retomar sem se perder.'],
+  ], criterion: 'Continue quando conseguir se apresentar em algumas frases e fazer uma pergunta simples, mesmo com pausas. Se ainda precisar ler tudo, repita esta parte com pequenas variações.', links: [['/cursos', 'Abrir o curso britânico'], ['/praticar', 'Fazer a primeira prática'], ['/conversacao', 'Treinar uma apresentação']] },
+  { title: 'Continuar: inglês para a rotina em Oxford', subtitle: 'Parte 2 · use a base em situações reais', steps: [
+    ['Siga as atividades A1 do British Council.', 'Alterne Speaking, Listening, Reading, Grammar e Vocabulary. Faça apenas uma atividade principal por sessão.'],
+    ['Faça as práticas A1 nesta ordem.', 'Um pedido no café → Uma rotina possível → Encontrar um lugar. Ouça, responda, escreva e guarde uma expressão útil.'],
+    ['Repita o assunto na aba Conversação.', 'Use café, rotina, vida acadêmica e imprevistos. Na segunda tentativa, troque o pedido, horário ou lugar.'],
+    ['Observe diferenças sem decorar listas enormes.', 'Priorize palavras que você encontrará no Reino Unido: flat, lift, queue, postcode, holiday e city centre.'],
+  ], criterion: 'Avance quando conseguir trocar perguntas sobre sua rotina, entender a ideia de um áudio A1 após repetir e escrever uma mensagem curta compreensível. Não precisa acertar tudo.', links: [['/cursos', 'Retomar minha rota britânica'], ['/praticar', 'Praticar situações A1'], ['/conversacao', 'Conversar sobre minha rotina']] },
+  { title: 'Avançar: estudar, explicar e participar', subtitle: 'Parte 3 · conecte suas ideias', steps: [
+    ['Experimente as práticas A2.', 'Faça “O que aconteceu no fim de semana?” e “Uma mudança de horário”. Observe horário, transporte e vocabulário acadêmico.'],
+    ['Acrescente listening e escrita aos poucos.', 'Use Listening A2 do British Council e o Write & Improve. Escreva primeiro, leia o feedback e reescreva com suas palavras.'],
+    ['Leve Oxford e seus interesses para a conversa.', 'Fale sobre faculdade, YouTube, games ou Fórmula 1. Explique uma ideia, dê um motivo e faça uma pergunta.'],
+    ['Compare uma tentativa nova com uma antiga.', 'A cada quatro semanas, repita sua apresentação e releia uma anotação. Ajuste o nível pelo que consegue fazer.'],
+  ], criterion: 'Continue ampliando os temas no seu ritmo. B1 e B2 trazem fala mais longa, diferentes sotaques britânicos e linguagem acadêmica; provas entram apenas quando fizer sentido.', links: [['/praticar', 'Experimentar as práticas A2'], ['/cursos', 'Abrir listening e escrita'], ['/', 'Revisar meu plano']] },
+] as const;
+
 export function StudyGuide() {
   const { state, save, busy } = useLearningWorkspace();
-  const completed = state.checks['study-guide'] ?? [false, false, false];
+  const variant = state.settings.variant;
+  const stages = variant === 'british' ? britishStages : americanStages;
+  const variantMeta = ENGLISH_VARIANTS[variant];
+  const guideKey = `study-guide-${variant}`;
+  const completed = state.checks[guideKey] ?? (variant === 'american' ? state.checks['study-guide'] : undefined) ?? [false, false, false];
   const next = completed.findIndex(value => !value);
   return <div className="learn-page">
-    <PageHeading eyebrow="SEU CAMINHO · PARTE POR PARTE" title="Abra o guia. Saiba o próximo passo." text="Siga estas três partes na ordem. A VOA é o seu curso principal; as práticas e conversas ajudam você a usar o que aprendeu. Volte aqui sempre que não souber o que fazer." />
+    <PageHeading eyebrow={`${variantMeta.label.toUpperCase()} · PARTE POR PARTE`} title="Abra o guia. Saiba o próximo passo." text={variant === 'british' ? 'Siga as três partes da rota britânica: materiais do British Council e Cambridge, práticas internas com voz en-GB e conversas voltadas à vida em Oxford.' : 'Siga as três partes da rota americana: VOA ou USA Learns como curso principal, práticas internas com voz en-US e conversação consistente.'} />
     <div className="learn-banner"><span className="learn-task-symbol">{next < 0 ? '✓' : `0${next + 1}`}</span><div><strong>{next < 0 ? 'Você percorreu as três partes. Agora repita e aprofunde.' : `Seu próximo ponto de partida: ${stages[next].title}`}</strong><p>Sem prazo para terminar cada parte. A data de revisão do plano pode mudar; avance pelo que consegue fazer.</p></div><a className="learn-button primary" href={`#parte-${next < 0 ? 3 : next + 1}`}>Ir para minha parte ↓</a></div>
     <section className="learn-card"><span className="learn-eyebrow">COMO USAR EM CADA DIA DE ESTUDO</span><h2>Uma sequência simples para repetir</h2><ol className="learn-instructions"><li><strong>Retome:</strong> leia a anotação do curso e abra a lição onde parou.</li><li><strong>Aprenda:</strong> estude um trecho e confira o que entendeu.</li><li><strong>Use:</strong> escreva algumas frases ou pratique a conversa do mesmo assunto.</li><li><strong>Guarde:</strong> revise uma expressão e anote o próximo passo.</li></ol><p>Seu plano está em {state.settings.minutes} minutos por sessão. Divida esse tempo entre as atividades; não precisa terminar todos os passos de uma parte no mesmo dia. Quando o tempo acabar, anote onde parou e retome dali.</p><Link className="learn-text-link" to="/">Abrir meu checklist diário →</Link></section>
-    {stages.map((stage, index) => <section className="learn-card" id={`parte-${index + 1}`} key={stage.title} style={{ scrollMarginTop: 24 }}><div className="learn-section-head"><div><span className="learn-eyebrow">{stage.subtitle}</span><h2>{stage.title}</h2></div><span className="learn-pill">{completed[index] ? 'Parte percorrida ✓' : `Parte ${index + 1} de 3`}</span></div><ol className="learn-instructions">{stage.steps.map(([title, detail]) => <li key={title}><strong>{title}</strong><p>{detail}</p></li>)}</ol><div className="learn-next"><strong>Quando seguir para o próximo passo?</strong><p>{stage.criterion}</p></div><div className="learn-actions">{stage.links.map(([to, label]) => <Link className="learn-button" key={label} to={to}>{label} →</Link>)}</div><label className="learn-check-label"><input type="checkbox" disabled={busy} checked={completed[index] ?? false} onChange={e => { const checked = e.target.checked; void save(s => { const values = [...(s.checks['study-guide'] ?? [false, false, false])]; values[index] = checked; s.checks['study-guide'] = values; }); }} />Percorri esta parte e quero marcar meu avanço</label></section>)}
-    <section className="learn-card"><Note id="study-guide-next" title="Meu próximo passo, sem precisar lembrar de cabeça" placeholder="Estou na parte 1 · VOA Lesson 1, minuto… · na próxima sessão vou…" /></section>
+    {stages.map((stage, index) => <section className="learn-card" id={`parte-${index + 1}`} key={stage.title} style={{ scrollMarginTop: 24 }}><div className="learn-section-head"><div><span className="learn-eyebrow">{stage.subtitle}</span><h2>{stage.title}</h2></div><span className="learn-pill">{completed[index] ? 'Parte percorrida ✓' : `Parte ${index + 1} de 3`}</span></div><ol className="learn-instructions">{stage.steps.map(([title, detail]) => <li key={title}><strong>{title}</strong><p>{detail}</p></li>)}</ol><div className="learn-next"><strong>Quando seguir para o próximo passo?</strong><p>{stage.criterion}</p></div><div className="learn-actions">{stage.links.map(([to, label]) => <Link className="learn-button" key={label} to={to}>{label} →</Link>)}</div><label className="learn-check-label"><input type="checkbox" disabled={busy} checked={completed[index] ?? false} onChange={e => { const checked = e.target.checked; void save(s => { const values = [...(s.checks[guideKey] ?? [false, false, false])]; values[index] = checked; s.checks[guideKey] = values; }); }} />Percorri esta parte e quero marcar meu avanço</label></section>)}
+    <section className="learn-card"><Note id={`study-guide-next-${variant}`} title="Meu próximo passo, sem precisar lembrar de cabeça" placeholder={variant === 'british' ? 'Estou na parte 1 · British Council, atividade… · na próxima sessão vou…' : 'Estou na parte 1 · VOA Lesson 1, minuto… · na próxima sessão vou…'} /></section>
   </div>;
 }
