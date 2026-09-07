@@ -1,9 +1,18 @@
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Fragment } from 'react';
 import { useAppStore } from '../store/appStore';
-import { LearningWorkspace } from './learning/Workspace';
+import { LearningWorkspace, useLearningWorkspace } from './learning/Workspace';
+import { EnglishVariantSwitch } from './learning/EnglishVariantSwitch';
 import '../styles/learning.css';
 
 const nav = [['/', 'Meu plano'], ['/guia-estudo', 'Guia'], ['/cursos', 'Cursos grátis'], ['/praticar', 'Praticar'], ['/conversacao', 'Conversação'], ['/sat', 'SAT'], ['/act', 'ACT'], ['/toefl', 'TOEFL']];
+function LearningContent({ showVariant }: { showVariant: boolean }) {
+  const { state } = useLearningWorkspace();
+  return <>
+    {showVariant && <EnglishVariantSwitch />}
+    <Fragment key={state.settings.variant}><Outlet /></Fragment>
+  </>;
+}
 export function Layout() {
   const { user, theme, toggleTheme, logout } = useAppStore();
   const { pathname } = useLocation();
@@ -18,7 +27,9 @@ export function Layout() {
         return <NavLink to={to} key={to} className={selected ? 'selected' : ''} aria-current={selected ? 'page' : undefined}>{label}</NavLink>;
       })}</nav>
     </header>
-    <main id="study-content" className="learn-main"><LearningWorkspace><Outlet /></LearningWorkspace></main>
+    <main id="study-content" className="learn-main"><LearningWorkspace>
+      <LearningContent showVariant={!['/sat', '/act', '/toefl', '/simulados', '/historico', '/guia'].some(path => pathname === path || pathname.startsWith(`${path}/`))} />
+    </LearningWorkspace></main>
     <footer className="learn-footer">Um pouco de inglês, com atenção, de cada vez.<span>SAT &amp; English Learning · estudo independente</span></footer>
   </div>;
 }

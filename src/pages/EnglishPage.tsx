@@ -20,6 +20,8 @@ import {
   calcOverallProgress,
 } from '../lib/english_scoring';
 import { DailyPlanScreen } from '../components/english/DailyPlanScreen';
+import { useLearningWorkspace } from '../components/learning/Workspace';
+import { ENGLISH_VARIANTS } from '../lib/learning-hub';
 
 type Screen =
   | 'loading'
@@ -1220,6 +1222,8 @@ function StudyLesson({
 // ── EnglishPage (main) ────────────────────────────────────────────────────────
 export function EnglishPage() {
   const { user } = useAppStore();
+  const { state } = useLearningWorkspace();
+  const variantMeta = ENGLISH_VARIANTS[state.settings.variant];
   const [screen, setScreen] = useState<Screen>('loading');
   const [progress, setProgress] = useState<UserEnglishProgress | null>(null);
   const [placementResult, setPlacementResult] = useState<PlacementResult | null>(null);
@@ -1313,9 +1317,9 @@ export function EnglishPage() {
             </div>
             <div>
               <h1 className="font-bold" style={{ color: 'var(--text-primary)', fontSize: '1rem', lineHeight: 1.2 }}>
-                Inglês
+                Núcleo de inglês · {variantMeta.shortLabel}
               </h1>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.72rem' }}>{subTitle[screen]}</p>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.72rem' }}>{subTitle[screen]} · gramática e leitura compartilhadas entre as duas trilhas</p>
             </div>
           </div>
         </div>
@@ -1371,7 +1375,7 @@ export function EnglishPage() {
       )}
 
       {screen === 'daily-plan' && user?.name && (
-        <DailyPlanScreen userId={user.name} onBack={() => setScreen('study-dashboard')} />
+        <DailyPlanScreen userId={user.name} variant={state.settings.variant} onBack={() => setScreen('study-dashboard')} />
       )}
     </div>
   );

@@ -1,7 +1,8 @@
 import 'fake-indexeddb/auto';
 import { beforeEach, expect, test } from 'vitest';
 import { db } from '../src/db';
-import { defaultLearningHub, updateLearningHub, studyBudget, localDate, conversationPrompt, weeklyActivity } from '../src/lib/learning-hub';
+import { defaultLearningHub, getLearningHub, updateLearningHub, studyBudget, localDate, conversationPrompt, weeklyActivity } from '../src/lib/learning-hub';
+import { englishCoursesByVariant, practiceLessonsByVariant, speakingTopicsByVariant } from '../src/data/english-variants';
 import { loadEngineProgress, saveEngineProgress } from '../src/lib/english_engine_storage';
 import { completeLessonForUser, loadEnglishProgress, resetPlacement } from '../src/lib/english_storage';
 import { studySnapshot } from '../src/lib/study-sync';
@@ -49,7 +50,29 @@ test('daily budgets, local dates and weekly totals match the chosen schedule', (
   expect(weeklyActivity(state, date).map(d => d.minutes)).toEqual([0, 0, 0, 0, 0, 0, 10]);
 });
 test('conversation prompt adapts to selected context without guaranteeing a level', () => {
-  const prompt = conversationPrompt('A1', 'pedir um café', 5);
+  const prompt = conversationPrompt('A1', 'pedir um café', 5, 'british');
   expect(prompt).toContain('A1'); expect(prompt).toContain('5 minutos'); expect(prompt).toContain('pedir um café');
+  expect(prompt).toContain('inglês britânico'); expect(prompt).toContain('flat/apartment');
   expect(prompt).toContain('APENAS UMA pergunta'); expect(prompt).toContain('Não atribua nota');
+  expect(conversationPrompt('A2', 'rotina', 10, 'american')).toContain('inglês americano');
+});
+test('legacy learning hub records migrate to the British track without losing progress', () => {
+  const legacy = defaultLearningHub() as unknown as { version: 1; settings: { level: 'A1'; minutes: number; days: number; reviewDate: string }; courses: Record<string, { status: 'not_started'; note: string }>; days: Record<string, never>; journal: Record<string, string>; checks: Record<string, boolean[]> };
+  legacy.version = 1;
+  delete (legacy.settings as { variant?: string }).variant;
+  legacy.journal.saved = 'Keep me';
+  const migrated = getLearningHub(legacy as never);
+  expect(migrated.version).toBe(2);
+  expect(migrated.settings.variant).toBe('british');
+  expect(migrated.journal.saved).toBe('Keep me');
+});
+test('British and American tracks expose complete, distinct study material', () => {
+  expect(englishCoursesByVariant.british).toHaveLength(8);
+  expect(englishCoursesByVariant.american).toHaveLength(8);
+  expect(practiceLessonsByVariant.british).toHaveLength(8);
+  expect(practiceLessonsByVariant.american).toHaveLength(8);
+  expect(practiceLessonsByVariant.british.some(lesson => lesson.script.includes('pounds'))).toBe(true);
+  expect(practiceLessonsByVariant.american.some(lesson => lesson.script.includes('dollars'))).toBe(true);
+  expect(speakingTopicsByVariant.british.find(topic => topic.title === 'Games')?.starter).toContain('favourite');
+  expect(speakingTopicsByVariant.american.find(topic => topic.title === 'Games')?.starter).toContain('favorite');
 });

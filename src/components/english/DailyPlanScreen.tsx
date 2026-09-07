@@ -8,10 +8,11 @@ import type { SrsCard } from '../../lib/srs';
 import { SrsReviewTrainer } from './SrsReviewTrainer';
 import { ReadingTrainer } from './ReadingTrainer';
 import { checkAiAvailable } from '../../lib/llm_client';
+import { ENGLISH_VARIANTS, type EnglishVariant } from '../../lib/learning-hub';
 
 type OpenTrainer = 'srs' | 'reading' | null;
 
-export function DailyPlanScreen({ userId, onBack }: { userId: string; onBack: () => void }) {
+export function DailyPlanScreen({ userId, variant, onBack }: { userId: string; variant: EnglishVariant; onBack: () => void }) {
   const [plan, setPlan] = useState<DailyPlanState | null>(null);
   const [streak, setStreak] = useState(0);
   const [dueCards, setDueCards] = useState<SrsCard[]>([]);
@@ -92,6 +93,7 @@ export function DailyPlanScreen({ userId, onBack }: { userId: string; onBack: ()
           userId={userId}
           date={plan.date}
           cefr={getCefrForWeek(plan.weekNumber)}
+          variant={variant}
           onComplete={async () => {
             await toggleBlock(userId, plan!.date, 'reading');
             setOpenTrainer(null);
@@ -107,7 +109,7 @@ export function DailyPlanScreen({ userId, onBack }: { userId: string; onBack: ()
       {/* Header */}
       <div className="flex items-start justify-between gap-3 mb-5">
         <div>
-          <h1 className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Plano de Hoje</h1>
+          <h1 className="text-2xl font-black tracking-tight" style={{ color: 'var(--text-primary)' }}>Plano de Hoje · {ENGLISH_VARIANTS[variant].shortLabel}</h1>
           <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
             Semana {plan.weekNumber} de 26 — Fase {info.phase.id}: {info.phase.label}
           </p>

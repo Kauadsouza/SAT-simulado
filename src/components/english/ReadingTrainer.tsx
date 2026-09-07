@@ -3,6 +3,7 @@ import type { CEFRLevel } from '../../lib/english_types';
 import { generateReadingContent, type ReadingContent } from '../../lib/llm_reading';
 import { getCachedContent, setCachedContent } from '../../lib/llm_content_storage';
 import { mineVocabIntoSrs } from '../../lib/english_engine_storage';
+import type { EnglishVariant } from '../../lib/learning-hub';
 
 type Phase = 'loading' | 'error' | 'passage' | 'questions' | 'summary';
 
@@ -10,11 +11,13 @@ export function ReadingTrainer({
   userId,
   date,
   cefr,
+  variant,
   onComplete,
 }: {
   userId: string;
   date: string;
   cefr: CEFRLevel;
+  variant: EnglishVariant;
   onComplete: () => void;
 }) {
   const [phase, setPhase] = useState<Phase>('loading');
@@ -28,21 +31,22 @@ export function ReadingTrainer({
   const load = useCallback(async () => {
     setPhase('loading');
     try {
-      const cached = await getCachedContent<ReadingContent>(userId, date, 'reading');
+      const cacheKey = `reading-${variant}`;
+      const cached = await getCachedContent<ReadingContent>(userId, date, cacheKey);
       if (cached) {
         setContent(cached);
         setPhase('passage');
         return;
       }
-      const generated = await generateReadingContent(cefr);
-      await setCachedContent(userId, date, 'reading', cefr, generated);
+      const generated = await generateReadingContent(cefr, variant);
+      await setCachedContent(userId, date, cacheKey, cefr, generated);
       setContent(generated);
       setPhase('passage');
     } catch (e) {
       setErrorMsg(e instanceof Error ? e.message : 'Erro desconhecido ao gerar conteúdo.');
       setPhase('error');
     }
-  }, [userId, date, cefr]);
+  }, [userId, date, cefr, variant]);
 
   useEffect(() => {
     void Promise.resolve().then(load);
@@ -111,7 +115,7 @@ export function ReadingTrainer({
       if (isLast) {
         const mined = await mineVocabIntoSrs(
           userId,
-          content!.vocab.map((v) => ({ front: v.word, back: v.translation, example: v.example, cefr, tags: ['reading', 'gerado'] })),
+          content!.vocab.map((v) => ({ front: v.word, back: v.translation, example: v.example, cefr, tags: ['reading', 'gerado', variant] })),
         );
         setMinedCount(mined);
         setPhase('summary');

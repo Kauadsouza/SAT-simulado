@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useLearningWorkspace, Note } from '../components/learning/Workspace';
-import { localDate, studyBudget, weeklyActivity, type LearningLevel } from '../lib/learning-hub';
+import { ENGLISH_VARIANTS, localDate, studyBudget, weeklyActivity, type LearningLevel } from '../lib/learning-hub';
 import { milestones } from '../data/learning-hub';
+import { variantDifferenceExamples } from '../data/english-variants';
 
 const activities = [
   { id: 'listen', name: 'Ouvir e entender', detail: 'Um trecho curto. Primeiro sem legenda, depois confira.', to: '/cursos', symbol: '♫' },
@@ -19,14 +20,17 @@ export function LearningHome() {
   const week = weeklyActivity(state);
   const activeDays = week.filter(day => day.minutes > 0).length;
   const reviewDate = new Date(state.settings.reviewDate + 'T12:00:00');
+  const variant = state.settings.variant;
+  const variantMeta = ENGLISH_VARIANTS[variant];
+  const isBritish = variant === 'british';
   return <div className="learn-page">
     <section className="learn-hero">
-      <div><span className="learn-eyebrow">INGLÊS PARA A SUA VIDA</span><h1>Mais confiança.<br /><em>Uma conversa de cada vez.</em></h1><p>Você já entende palavras e frases simples. Agora vamos transformar essa base em inglês que você consegue usar.</p><div className="learn-actions"><Link className="learn-button primary" to="/praticar">Começar a prática <span>→</span></Link><button className="learn-button" onClick={() => setEditing(!editing)} aria-expanded={editing}>Ajustar meu plano</button></div><span className="learn-hero-foot">Básico como ponto de partida · ritmo flexível · sem depender da imersão</span></div>
-      <div className="learn-hero-board" aria-label="Resumo do plano"><div className="learn-between"><span>SEU RITMO ATUAL</span><span className="learn-dot" /></div><div className="learn-big-number">{state.settings.minutes}<span>min / sessão</span></div><div className="learn-wave" aria-hidden="true">{[20, 40, 65, 35, 90, 55, 110, 72, 48, 85, 40, 60, 25].map((height, i) => <i key={i} style={{ height }} />)}</div><div className="learn-between"><strong>{state.settings.days} dias por semana</strong><span>nível de prática {state.settings.level}</span></div><p>Comece pequeno. Se ficar pesado, reduza o ritmo e continue de onde parou.</p></div>
+      <div><span className="learn-eyebrow">{isBritish ? 'INGLÊS PARA A SUA VIDA EM OXFORD' : 'INGLÊS AMERICANO PARA O SEU REPERTÓRIO'}</span><h1>Mais confiança.<br /><em>{isBritish ? 'Uma conversa no Reino Unido de cada vez.' : 'Uma conversa em inglês americano de cada vez.'}</em></h1><p>{isBritish ? 'Transforme sua base em inglês britânico que você consegue usar em cafés, transportes, estudos e conversas reais em Oxford.' : 'Pratique a variedade americana com situações, pronúncia e vocabulário dos Estados Unidos, sem misturar os dois padrões.'}</p><div className="learn-actions"><Link className="learn-button primary" to="/praticar">Começar a prática {isBritish ? 'britânica' : 'americana'} <span>→</span></Link><button className="learn-button" onClick={() => setEditing(!editing)} aria-expanded={editing}>Ajustar meu plano</button></div><span className="learn-hero-foot">{variantMeta.label} · básico como ponto de partida · ritmo flexível</span></div>
+      <div className="learn-hero-board" aria-label="Resumo do plano"><div className="learn-between"><span>{variantMeta.label.toUpperCase()} · SEU RITMO</span><span className="learn-dot" /></div><div className="learn-big-number">{state.settings.minutes}<span>min / sessão</span></div><div className="learn-wave" aria-hidden="true">{[20, 40, 65, 35, 90, 55, 110, 72, 48, 85, 40, 60, 25].map((height, i) => <i key={i} style={{ height }} />)}</div><div className="learn-between"><strong>{state.settings.days} dias por semana</strong><span>nível de prática {state.settings.level}</span></div><p>{variantMeta.description}</p><div className="learn-variant-words" aria-label="Exemplos de diferenças de vocabulário">{variantDifferenceExamples[variant].slice(0, 3).map(([target, alternative]) => <span key={target}><strong>{target}</strong><small>em vez de {alternative}</small></span>)}</div></div>
     </section>
     {editing && <form className="learn-card learn-settings" onSubmit={async e => {
       e.preventDefault(); const data = new FormData(e.currentTarget);
-      const settings = { level: String(data.get('level')) as LearningLevel, minutes: Number(data.get('minutes')), days: Number(data.get('days')), reviewDate: String(data.get('date')) };
+      const settings = { level: String(data.get('level')) as LearningLevel, variant: state.settings.variant, minutes: Number(data.get('minutes')), days: Number(data.get('days')), reviewDate: String(data.get('date')) };
       if (await save(s => { s.settings = settings; })) setEditing(false);
     }}><div><h2>Um plano que cabe na sua semana</h2><p>A data é uma revisão de progresso. Você pode mudá-la a qualquer momento.</p></div><div className="learn-form-grid">
       <label>Nível de prática<select name="level" defaultValue={state.settings.level}>{['A1', 'A2', 'B1', 'B2'].map(l => <option key={l}>{l}</option>)}</select></label>
