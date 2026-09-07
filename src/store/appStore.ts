@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { accountScope } from '../lib/account-scope';
 import { persist } from 'zustand/middleware';
 import type { AppUser } from '../lib/types';
 
@@ -22,7 +23,7 @@ export const useAppStore = create<AppStore>()(
         set((s) => ({ theme: s.theme === 'dark' ? 'light' : 'dark' })),
     }),
     {
-      name: 'sat-app-store',
+      name: `sat-app-store${accountScope() ? `:${accountScope()}` : ''}`,
     }
   )
 );

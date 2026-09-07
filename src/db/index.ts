@@ -1,4 +1,5 @@
 import Dexie, { type EntityTable, type Table } from 'dexie';
+import { accountScope } from '../lib/account-scope';
 import type { ExamSession } from '../lib/types';
 import type { UserEnglishProgress } from '../lib/english_types';
 import type { SrsCard } from '../lib/srs';
@@ -11,7 +12,7 @@ interface UserProfile {
   createdAt: number;
 }
 
-const db = new Dexie('SATSimulator') as Dexie & {
+const db = new Dexie(`SATSimulator${accountScope() ? `:${accountScope()}` : ''}`) as Dexie & {
   users: EntityTable<UserProfile, 'id'>;
   sessions: EntityTable<ExamSession, 'id'>;
   englishProgress: EntityTable<UserEnglishProgress, 'userId'>;
