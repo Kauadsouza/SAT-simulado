@@ -3,10 +3,16 @@ import { liveQuery } from 'dexie';
 import { connectStudy, disconnectStudy, studyAuth } from '../lib/cloud';
 import { exportStudy, studySnapshot, syncStudy } from '../lib/study-sync';
 import { useAppStore } from '../store/appStore';
+import { MemberAccess } from './MemberAccess';
+import { MemberStudy } from './MemberStudy';
 
 const hubOrigin = 'https://artx-hub.vercel.app';
 
 export function StudyCloud({ children }: { children: ReactNode }) {
+  return <MemberAccess app="study">{session => session.owner ? <OwnerStudyCloud>{children}</OwnerStudyCloud> : <MemberStudy key={session.principal} session={session}>{children}</MemberStudy>}</MemberAccess>;
+}
+
+function OwnerStudyCloud({ children }: { children: ReactNode }) {
   const profile = useAppStore(state => state.user?.name);
   const [owner, setOwner] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
