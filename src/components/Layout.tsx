@@ -19,7 +19,7 @@ export function Layout() {
   return <div className="learn-shell">
     <a className="learn-skip" href="#study-content">Pular para o conteúdo</a>
     <header className="learn-header">
-      <div className="learn-top"><NavLink to="/" className="learn-brand" aria-label="SAT & English Learning, início"><span className="learn-logo">s<span>e</span></span><span>SAT &amp; <b>English Learning</b><small>SEU ESPAÇO DE APRENDIZADO</small></span></NavLink>
+      <div className="learn-top"><NavLink to="/" className="learn-brand" aria-label="SAT & English Learning, início"><img className="learn-logo" src="/english.svg" alt="" /><span>SAT &amp; <b>English Learning</b><small>SEU ESPAÇO DE APRENDIZADO</small></span></NavLink>
         <div className="learn-account"><span>{user?.name}</span><button onClick={toggleTheme} aria-label={theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro'}>{theme === 'dark' ? '☀' : '☾'}</button><button onClick={logout}>Sair</button></div>
       </div>
       <nav className="learn-tabs" aria-label="Áreas de estudo">{nav.map(([to, label]) => {

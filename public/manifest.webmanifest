@@ -1,0 +1,10 @@
+{
+  "name": "ARTX English Learning",
+  "short_name": "ARTX English",
+  "description": "Inglês americano e britânico, cursos e prática.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f1716",
+  "theme_color": "#10201d",
+  "icons": [{ "src": "/english.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
