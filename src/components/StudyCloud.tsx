@@ -80,8 +80,8 @@ function OwnerStudyCloud({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (window.parent === window) return;
-    const healthy = /sincronizado|conectada/i.test(status);
-    const syncing = /conectando|sincronizando/i.test(status);
+    const healthy = status === 'Progresso sincronizado';
+    const syncing = /conectando|sincronizando|conectada/i.test(status);
     window.parent.postMessage({
       type: 'ARTX_SYSTEM_STATUS',
       system: 'sat',

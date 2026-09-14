@@ -35,11 +35,11 @@ export function MemberAccess({ app, children }: { app: 'videos' | 'study' | 'uni
       try {
         if (event.data?.type === 'ARTX_HUB_AUTH' && typeof event.data.accessToken === 'string') {
           const verified = await accountRequest('owner', app, {}, event.data.accessToken);
-          if (active) { sessionStorage.setItem(`artx-account:${app}`, JSON.stringify(verified)); setSession(verified); setReady(true); }
+          if (active) { sessionStorage.setItem(`artx-account:${app}`, JSON.stringify(verified)); setSession(verified); setMessage(''); setReady(true); }
         } else if (event.data?.type === 'ARTX_MEMBER_AUTH' && typeof event.data.token === 'string') {
           const verified = await accountRequest('session', app, {}, event.data.token);
           if (verified.owner) throw new Error('Sessão inválida.');
-          if (active) { const member = { ...verified, token: event.data.token }; sessionStorage.setItem(`artx-account:${app}`, JSON.stringify(member)); setSession(member); setReady(true); }
+          if (active) { const member = { ...verified, token: event.data.token }; sessionStorage.setItem(`artx-account:${app}`, JSON.stringify(member)); setSession(member); setMessage(''); setReady(true); }
         }
       } catch { if (active) setMessage('Não foi possível confirmar seu acesso pelo Hub.'); }
     }
