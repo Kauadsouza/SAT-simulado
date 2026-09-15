@@ -33,7 +33,7 @@ export async function loadEngineProgress(userId: string): Promise<EnglishEngineP
 export async function saveEngineProgress(progress: EnglishEngineProgress): Promise<void> {
   await db.transaction('rw', db.englishEngine, async () => {
     const latest = await db.englishEngine.get(progress.userId);
-    await db.englishEngine.put({ ...progress, learningHub: latest?.learningHub ?? progress.learningHub, updatedAt: new Date().toISOString() });
+    await db.englishEngine.put({ ...progress, learningHub: latest?.learningHub ?? progress.learningHub, spanishHub: latest?.spanishHub ?? progress.spanishHub, updatedAt: new Date().toISOString() });
   });
 }
 
