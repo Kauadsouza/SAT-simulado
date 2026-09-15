@@ -1,7 +1,7 @@
 {
-  "name": "ARTX English Learning",
-  "short_name": "ARTX English",
-  "description": "Inglês americano e britânico, cursos e prática.",
+  "name": "ARTX Idiomas",
+  "short_name": "ARTX Idiomas",
+  "description": "Inglês e espanhol: estudo diário, conversação e provas.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0f1716",

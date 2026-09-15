@@ -67,7 +67,7 @@ export function studyBudget(minutes: number): number[] {
   const speaking = Math.round(minutes / 6);
   return [listen, practice, speaking, minutes - listen - practice - speaking];
 }
-export function weeklyActivity(state: LearningHubState, now = new Date()) {
+export function weeklyActivity(state: { days: Record<string, { minutes: number }> }, now = new Date()) {
   return Array.from({ length: 7 }, (_, i) => {
     const date = new Date(now); date.setDate(date.getDate() - (6 - i));
     const key = localDate(date);
