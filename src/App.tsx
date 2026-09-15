@@ -18,6 +18,7 @@ const PracticePage = lazy(() => import('./pages/PracticePage').then(m => ({ defa
 const ConversationPage = lazy(() => import('./pages/ConversationPage').then(m => ({ default: m.ConversationPage })));
 const SpanishHome = lazy(() => import('./pages/SpanishHome').then(m => ({ default: m.SpanishHome })));
 const SpanishPractice = lazy(() => import('./pages/SpanishPractice').then(m => ({ default: m.SpanishPractice })));
+const SpanishCourses = lazy(() => import('./pages/SpanishCourses').then(m => ({ default: m.SpanishCourses })));
 const SpanishConversation = lazy(() => import('./pages/SpanishConversation').then(m => ({ default: m.SpanishConversation })));
 const SpanishExam = lazy(() => import('./pages/SpanishExam').then(m => ({ default: m.SpanishExam })));
 const SatTrack = lazy(() => import('./pages/ExamTracks').then(m => ({ default: m.SatTrack })));
@@ -66,6 +67,7 @@ export default function App() {
           <Route path="/ingles"    element={<EnglishPage />} />
           <Route path="/guia"      element={<GuiaPage />} />
           <Route path="/espanhol" element={<SpanishHome />} />
+          <Route path="/espanhol/cursos" element={<SpanishCourses />} />
           <Route path="/espanhol/praticar" element={<SpanishPractice />} />
           <Route path="/espanhol/conversacao" element={<SpanishConversation />} />
           <Route path="/espanhol/simulado" element={<SpanishExam />} />

@@ -17,6 +17,7 @@ export function SpanishHome() {
   const variantMeta = SPANISH_VARIANTS[state.settings.variant];
   const units = SPANISH_UNITS.filter(unit => unit.level === state.settings.level);
   const lastAttempt = state.attempts[state.attempts.length - 1];
+  const coursesRunning = Object.values(state.courses).filter(course => course.status === 'in_progress').length;
 
   return <div className="learn-page">
     <section className="learn-hero learn-hero-compact">
@@ -88,6 +89,7 @@ export function SpanishHome() {
         <h2>Sua semana</h2>
         <div className="learn-week-bars">{week.map(day => <div key={day.date}><div className="learn-bar-track"><i style={{ height: `${Math.min(100, day.minutes / Math.max(state.settings.minutes, 1) * 100)}%` }} /></div><strong>{day.minutes}′</strong><span>{day.label}</span></div>)}</div>
         <p>Perdeu um dia? Retome no próximo. Você não precisa compensar tudo de uma vez.</p>
+        <Link to="/espanhol/cursos" className="learn-text-link">Encontrar minha próxima aula →</Link>
         <Link to="/espanhol/simulado" className="learn-text-link">Testar o que já entendo →</Link>
         <p className="learn-muted">Próxima revisão do plano: {reviewDate.toLocaleDateString('pt-BR', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
       </aside>
@@ -100,7 +102,10 @@ export function SpanishHome() {
         <p>{unit.focus}</p>
         <p className="learn-muted">{unit.point}</p>
       </article>) : <p className="learn-muted">Nesta fase, siga pelas frases e pelos falsos amigos na página de prática.</p>}
-      <Link className="learn-button" to="/espanhol/praticar">Abrir a prática do nível →</Link>
+      <div className="learn-actions">
+        <Link className="learn-button primary" to="/espanhol/cursos">Ver os cursos gratuitos{coursesRunning ? ` · ${coursesRunning} em andamento` : ''} →</Link>
+        <Link className="learn-button" to="/espanhol/praticar">Abrir a prática do nível</Link>
+      </div>
     </section>
 
     <details className="learn-card"><summary>Meu caderno de espanhol</summary><SpanishNote id="progreso" title="Meu registro de evolução" placeholder="Data · o que já consigo dizer · o que ainda trava · uma frase que quero revisar…" /></details>

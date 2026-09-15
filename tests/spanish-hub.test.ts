@@ -4,7 +4,7 @@ import { db } from '../src/db';
 import { conversationPromptEs, defaultSpanishHub, getSpanishHub, updateSpanishHub } from '../src/lib/spanish-hub';
 import { updateLearningHub } from '../src/lib/learning-hub';
 import { loadEngineProgress, saveEngineProgress } from '../src/lib/english_engine_storage';
-import { SPANISH_QUESTIONS, SPANISH_UNITS, FALSE_FRIENDS } from '../src/data/spanish';
+import { SPANISH_QUESTIONS, SPANISH_UNITS, FALSE_FRIENDS, SPANISH_COURSES, SPANISH_ROADMAP } from '../src/data/spanish';
 
 beforeEach(async () => { await Promise.all(db.tables.map(t => t.clear())); });
 
@@ -72,6 +72,29 @@ test('the authored question bank is internally consistent', () => {
     expect(question.why.length).toBeGreaterThan(20);
   }
   expect(new Set(SPANISH_QUESTIONS.map(q => q.skill)).size).toBe(4);
+});
+
+test('course progress survives alongside notes and attempts', async () => {
+  await updateSpanishHub('learner', s => { s.courses['lt-complete'] = { status: 'in_progress', note: 'Aula 12' }; });
+  await updateSpanishHub('learner', s => { s.attempts = [{ date: '2026-09-15', correct: 5, total: 6 }]; });
+  const hub = (await loadEngineProgress('learner')).spanishHub!;
+  expect(hub.courses['lt-complete']).toEqual({ status: 'in_progress', note: 'Aula 12' });
+  expect(hub.attempts).toHaveLength(1);
+  expect(getSpanishHub({ ...hub, courses: undefined as never }).courses).toEqual({});
+});
+
+test('every free course points at a level range the filter understands', () => {
+  const levels = ['A1', 'A2', 'B1', 'B2'];
+  const ids = new Set<string>();
+  for (const course of SPANISH_COURSES) {
+    expect(ids.has(course.id), `id repetido: ${course.id}`).toBe(false);
+    ids.add(course.id);
+    expect(course.url.startsWith('https://'), `${course.id} precisa de https`).toBe(true);
+    for (const level of course.level.split('–')) expect(levels, `${course.id} tem nível inválido`).toContain(level);
+    expect(course.action.length).toBeGreaterThan(20);
+    expect(['peach', 'mint', 'lavender', 'sky']).toContain(course.color);
+  }
+  expect(SPANISH_ROADMAP.map(step => step.level)).toEqual(levels);
 });
 
 test('study material covers the levels offered in the plan', () => {
