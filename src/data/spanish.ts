@@ -1,7 +1,7 @@
 import type { SpanishLevel } from '../lib/spanish-hub';
 
 export const SPANISH_ACTIVITIES = [
-  { id: 'escuchar', name: 'Escutar e entender', detail: 'Um áudio ou vídeo curto. Primeiro sem legenda, depois confira.', to: '/espanhol/praticar#escutar', symbol: '♫' },
+  { id: 'escuchar', name: 'Escutar e entender', detail: 'Um áudio ou vídeo curto de um dos cursos. Primeiro sem legenda, depois confira.', to: '/espanhol/cursos', symbol: '♫' },
   { id: 'usar', name: 'Usar o que aprendeu', detail: 'Leia um texto curto e escreva três frases suas.', to: '/espanhol/praticar', symbol: 'Aa' },
   { id: 'hablar', name: 'Falar em voz alta', detail: 'Uma situação simples, sem precisar falar perfeito.', to: '/espanhol/conversacao', symbol: '¡Hola!' },
   { id: 'revisar', name: 'Lembrar sem olhar', detail: 'Revise as frases de ontem antes de conferir a resposta.', to: '/espanhol/praticar#revisar', symbol: '↻' },
@@ -56,6 +56,41 @@ export const SPANISH_UNITS: { level: SpanishLevel; title: string; focus: string;
     ],
     point: 'Depois de dúvida ou negação vem subjuntivo: “creo que es” (certeza) vira “no creo que sea” (dúvida). É o mesmo movimento do português, só que obrigatório.',
   },
+];
+
+/** Data em que cada link gratuito abaixo foi conferido. */
+export const SPANISH_RESEARCH_DATE = '15/09/2026';
+
+export interface SpanishCourse {
+  id: string;
+  provider: string;
+  title: string;
+  level: string;
+  skill: string;
+  mark: string;
+  color: 'peach' | 'mint' | 'lavender' | 'sky';
+  description: string;
+  action: string;
+  url: string;
+  type: string;
+}
+
+export const SPANISH_COURSES: SpanishCourse[] = [
+  { id: 'lt-complete', provider: 'Language Transfer', title: 'Complete Spanish', level: 'A1–B1', skill: 'Curso completo', mark: '90', color: 'peach', description: 'Noventa aulas em áudio que constroem o espanhol a partir do que você já sabe em português. Sem cadastro, sem anúncios e sem nada pago.', action: 'Ouça a aula 1 e pause toda vez que ele pedir, respondendo em voz alta antes de ouvir a resposta. Uma aula por sessão já é suficiente.', url: 'https://www.languagetransfer.org/complete-spanish', type: 'Comece aqui' },
+  { id: 'dreaming-spanish', provider: 'Dreaming Spanish', title: 'Input compreensível em vídeo', level: 'A1–B2', skill: 'Listening', mark: '♫', color: 'mint', description: 'Vídeos falados inteiramente em espanhol, com desenhos e gestos que deixam tudo compreensível, organizados de superbeginner a avançado.', action: 'Comece pela playlist Superbeginner. Não traduza: assista até pegar a ideia geral, mesmo perdendo palavras pelo caminho.', url: 'https://www.youtube.com/@DreamingSpanish', type: 'Canal gratuito' },
+  { id: 'cvc-lecturas', provider: 'Centro Virtual Cervantes', title: 'Lecturas paso a paso', level: 'A1–B2', skill: 'Reading', mark: 'a→b', color: 'sky', description: 'Leituras graduadas do Instituto Cervantes em três níveis, cada uma com atividades de compreensão no fim.', action: 'Escolha uma leitura do nível inicial. Leia inteira antes de consultar qualquer palavra e só depois faça as atividades.', url: 'https://cvc.cervantes.es/aula/lecturas/', type: 'Trilha gratuita' },
+  { id: 'cvc-ese', provider: 'Centro Virtual Cervantes', title: 'En sintonía con el español', level: 'A2–B2', skill: 'Listening', mark: '15′', color: 'lavender', description: 'Podcasts de cerca de quinze minutos: um ponto da língua explicado e, em seguida, um áudio real — entrevista, debate ou notícia — usando esse ponto.', action: 'Ouça um episódio inteiro sem pausar. Na segunda escuta, anote apenas três expressões que você realmente usaria.', url: 'https://cvc.cervantes.es/ensenanza/ese/', type: 'Podcast gratuito' },
+  { id: 'cvc-ave', provider: 'Instituto Cervantes', title: 'Atividades abertas do AVE', level: 'A1–B2', skill: 'Todas as habilidades', mark: 'AVE', color: 'mint', description: 'Seleção aberta de atividades interativas do curso oficial do Instituto Cervantes, com os níveis A1 a B2 disponíveis por completo.', action: 'Faça as atividades do seu nível atual. Alguns dias depois, refaça as que você errou sem olhar a resposta.', url: 'https://cvc.cervantes.es/ensenanza/actividades_ave/', type: 'Amostra gratuita' },
+  { id: 'utexas-spe', provider: 'UT Austin · LAITS', title: 'Spanish Proficiency Exercises', level: 'A1–B2', skill: 'Speaking', mark: '▶', color: 'peach', description: 'Vídeos curtos de falantes nativos de vários países fazendo tarefas reais: apresentar-se, pedir comida, contar um problema. Organizados por nível.', action: 'Escolha uma tarefa do nível Beginning, tente fazê-la sozinho antes de assistir e depois compare com dois falantes de países diferentes.', url: 'https://www.laits.utexas.edu/spe/', type: 'Biblioteca gratuita' },
+  { id: 'spanishdict-guide', provider: 'SpanishDict', title: 'Guia de gramática e conjugador', level: 'A1–B2', skill: 'Grammar', mark: 'am', color: 'sky', description: 'Explicações curtas de gramática com exemplos, além de um conjugador que cobre qualquer verbo em qualquer tempo.', action: 'Use quando travar numa frase de verdade. Consulte a regra, escreva duas frases suas e volte ao estudo.', url: 'https://www.spanishdict.com/guide', type: 'Referência gratuita' },
+  { id: 'conjuguemos', provider: 'Conjuguemos', title: 'Treino de conjugação', level: 'A1–B2', skill: 'Verbos', mark: '↻', color: 'lavender', description: 'Exercícios de conjugação por tempo verbal — presente, pretérito, subjuntivo — com correção imediata e um cronômetro opcional.', action: 'Escolha um tempo verbal só. Faça cinco minutos e anote os três verbos que mais escaparam.', url: 'https://conjuguemos.com/', type: 'Prática gratuita' },
+];
+
+export const SPANISH_ROADMAP: { level: SpanishLevel; title: string; text: string }[] = [
+  { level: 'A1', title: 'Sair do portunhol', text: 'Apresentar-se, pedir, perguntar preço e horário, e separar as palavras que enganam quem fala português.' },
+  { level: 'A2', title: 'Rotina e imprevistos', text: 'Contar o seu dia, combinar encontros, remarcar planos e falar do passado recente sem travar.' },
+  { level: 'B1', title: 'Opinar e argumentar', text: 'Dar opinião, discordar com educação, explicar motivos e acompanhar notícias e conversas reais.' },
+  { level: 'B2', title: 'Naturalidade e nuance', text: 'Conversas longas, sotaques diferentes, escrita mais detalhada e o humor que só aparece no uso.' },
 ];
 
 export const SPANISH_TOPICS: { icon: string; title: string; task: string; starter: string }[] = [

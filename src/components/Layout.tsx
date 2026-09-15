@@ -13,7 +13,7 @@ const ENGLISH_NAV: { estudo: NavItem[]; provas: NavItem[] } = {
   provas: [['/sat', 'SAT'], ['/act', 'ACT'], ['/toefl', 'TOEFL'], ['/simulados', 'Simulados']],
 };
 const SPANISH_NAV: { estudo: NavItem[]; provas: NavItem[] } = {
-  estudo: [['/espanhol', 'Meu plano'], ['/espanhol/praticar', 'Praticar'], ['/espanhol/conversacao', 'Conversação']],
+  estudo: [['/espanhol', 'Meu plano'], ['/espanhol/cursos', 'Cursos grátis'], ['/espanhol/praticar', 'Praticar'], ['/espanhol/conversacao', 'Conversação']],
   provas: [['/espanhol/simulado', 'Simulado']],
 };
 

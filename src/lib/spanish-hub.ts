@@ -27,6 +27,8 @@ export const SPANISH_VARIANTS: Record<SpanishVariant, {
   },
 };
 
+export type SpanishCourseStatus = 'not_started' | 'in_progress' | 'completed';
+
 export interface SpanishExamAttempt {
   date: string;
   correct: number;
@@ -36,6 +38,7 @@ export interface SpanishExamAttempt {
 export interface SpanishHubState {
   version: 1;
   settings: { level: SpanishLevel; variant: SpanishVariant; minutes: number; days: number; reviewDate: string };
+  courses: Record<string, { status: SpanishCourseStatus; note: string }>;
   days: Record<string, { done: string[]; minutes: number }>;
   journal: Record<string, string>;
   checks: Record<string, boolean[]>;
@@ -46,6 +49,7 @@ export function defaultSpanishHub(): SpanishHubState {
   return {
     version: 1,
     settings: { level: 'A1', variant: 'latam', minutes: 30, days: 5, reviewDate: '2027-04-30' },
+    courses: {},
     days: {},
     journal: {},
     checks: {},
@@ -57,7 +61,7 @@ export function getSpanishHub(value?: SpanishHubState): SpanishHubState {
   const defaults = defaultSpanishHub();
   const settings = { ...defaults.settings, ...value?.settings };
   if (!['espana', 'latam'].includes(settings.variant)) settings.variant = defaults.settings.variant;
-  return { ...defaults, ...value, version: 1, settings, attempts: value?.attempts ?? [] };
+  return { ...defaults, ...value, version: 1, settings, courses: value?.courses ?? {}, attempts: value?.attempts ?? [] };
 }
 
 // Stored next to the English record so the existing study sync carries it without a new table.
