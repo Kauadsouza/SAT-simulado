@@ -1,23 +1,42 @@
-# SAT & English Learning
+# Idiomas
 
-A bilingual learning platform that combines daily English practice with SAT-style adaptive exams and dedicated SAT, ACT and TOEFL study tracks. It was designed as a practical, measurable study system rather than a collection of disconnected exercises.
+**English** · [Português](README.pt-BR.md) · [Español](README.es.md)
 
-[Open the live application](https://sat-simulado.vercel.app)
+A language-study workspace built for real use, not as a collection of exercises. It covers **English** and **Spanish**, and each language is split into two tracks: **daily study** and **exam preparation**.
 
-![English learning dashboard](english-desktop.png)
+[Open the application](https://sat-simulado.vercel.app)
 
-## Key capabilities
+![Study dashboard](english-desktop.png)
 
-- Structured English curriculum with daily learning plans.
-- Reading, vocabulary, conversation and spaced-repetition practice.
-- Separate SAT, ACT and TOEFL preparation tracks.
-- SAT-style Reading & Writing and Math exam flow with adaptive second modules.
-- Timers, question navigation, answer elimination, review flags and formula reference.
-- Progress history, score trends and domain-level performance views.
-- Local-first IndexedDB storage with exportable progress.
-- Optional Supabase sync using the same authenticated session as ARTX Hub.
-- Optional server-side LLM generation; provider credentials never reach the browser.
-- Responsive interface with Portuguese contextual translation support.
+---
+
+## Why it exists
+
+Language apps tend to fail in one of two ways: they become an endless list of drills with no direction, or a mock exam that measures without teaching. Here the two live side by side without interfering — the daily plan stays separate from the exam tracks, and progress always belongs to the learner, stored on their own device first.
+
+## English
+
+**Study** — an adjustable daily plan (level, minutes per session, days per week), free courses with progress tracking, reading and vocabulary practice, conversation with a ready-made context for an AI tutor, and spaced repetition to review at the right interval.
+
+**Exams** — dedicated **SAT**, **ACT** and **TOEFL** tracks, plus a digital-SAT-style practice exam: Reading & Writing and Math, with the second module adapting to performance in the first, a timer, question navigation, answer elimination, review flags and a formula sheet.
+
+English also chooses between **British** and **American** variants, and that changes vocabulary, pronunciation and examples — it is not just a label.
+
+## Spanish
+
+**Study** — the same daily plan format, eight free resources selected and checked one by one (Language Transfer, Dreaming Spanish, three from Instituto Cervantes, UT Austin, SpanishDict and Conjuguemos), phrases by level with audio, and a conversation context that instructs the tutor to correct *portuñol* specifically.
+
+**Exams** — an original practice test covering reading comprehension, vocabulary in context, grammar in use and **false friends** — where Portuguese speakers make the most expensive mistakes. Every question explains its answer in Portuguese, and attempt history is saved.
+
+The variant can be **Spain** or **Latin America**, changing pronunciation and vocabulary.
+
+## Engineering decisions worth noting
+
+- **Local first.** All progress lives in the device's IndexedDB and works without an account. Cloud sync is optional and uses the same authenticated session as ARTX Hub — there is no second password.
+- **Sync with conflict detection.** Writes use revision comparison, so two tabs or two devices never silently overwrite each other.
+- **One record, two languages.** English and Spanish share the same synced record, with tests guaranteeing that saving one never erases the other.
+- **The AI credential never reaches the browser.** Content generation goes through a server endpoint; the provider key stays there.
+- **Per-account isolation.** Each approved account opens its own local database, with the identifier validated before it becomes a database name.
 
 ## Tech stack
 
@@ -34,13 +53,13 @@ Optional configuration:
 
 | Variable | Purpose |
 | --- | --- |
-| `LLM_BASE_URL` | Server-side OpenAI-compatible endpoint |
-| `LLM_MODEL` | Server-side model identifier |
-| `LLM_API_KEY` | Server-only provider credential |
-| `VITE_SUPABASE_URL` | Optional Supabase project URL |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Optional public client key for authenticated sync |
+| `LLM_BASE_URL` | OpenAI-compatible endpoint, used server-side |
+| `LLM_MODEL` | Model identifier |
+| `LLM_API_KEY` | Provider credential — never exposed to the browser |
+| `VITE_SUPABASE_URL` | Supabase project URL (optional) |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Public key for authenticated sync |
 
-Copy `.env.example` to `.env.local` for local configuration. Never commit real keys.
+Copy `.env.example` to `.env.local`. Never commit real keys.
 
 ## Verification
 
@@ -54,21 +73,21 @@ npm.cmd audit --omit=dev
 ## Repository map
 
 ```text
-api/              Serverless content-generation endpoint
-src/components/   Shared exam and learning UI
-src/data/         Learning content and question banks
-src/lib/          Storage, sync, scoring and learning engines
-src/pages/        Learning, exam and progress screens
+api/              Content-generation endpoint
+src/components/   Shared study and exam interface
+src/data/         Content and question banks (English and Spanish)
+src/lib/          Storage, sync, scoring and study engines
+src/pages/        Study, exam and progress screens
 src/store/        User and active-exam state
-tests/            Storage, learning and regression tests
+tests/            Storage, study and regression tests
 ```
 
 ## Academic disclaimer
 
-This is an independent educational project. It is not affiliated with or endorsed by College Board, ACT or ETS. Exam scoring is an approximation for practice and must not be presented as an official score.
+An independent educational project, not affiliated with College Board, ACT, ETS or Instituto Cervantes. Practice scoring is an approximation and must not be presented as an official score. The Spanish practice test is original and is not yet anchored to any specific official exam.
 
 ## Status
 
-Active personal learning platform. Local mode works without an account; cross-device sync and generated exercises require their optional services to be configured.
+In active use. Local mode works without an account; cross-device sync and generated exercises depend on their optional services being configured.
 
 Built and maintained by [Kauã Diniz Souza](https://github.com/Kauadsouza).
