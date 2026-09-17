@@ -184,3 +184,12 @@
 .learn-phrase p[lang="es"] strong { color:var(--text-primary); font-size:16px; }
 .learn-page blockquote cite { display:block; margin-top:10px; color:var(--learn-muted); font-size:11px; font-style:normal; letter-spacing:.4px; }
 @media(max-width:760px) { .learn-nav-groups { gap:6px 18px; } .learn-nav-groups .learn-tabs { gap:8px; } .learn-langs { padding-block:0 8px; } }
+
+/* Alvos de toque no celular.
+   Os links do roteiro diário e os de texto ficavam com 20-23px de altura —
+   abaixo do mínimo de 24px e desconfortáveis de acertar com o dedo. A área
+   cresce sem mudar o tamanho da letra nem o desenho da lista. */
+@media(max-width:760px){
+  .learn-checklist a,.learn-text-link{display:inline-flex;align-items:center;min-height:44px}
+  .study-sync-bar button{min-height:40px;padding-inline:12px}
+}
