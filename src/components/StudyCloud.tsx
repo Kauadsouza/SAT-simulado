@@ -1,12 +1,20 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { liveQuery } from 'dexie';
 import { connectStudy, disconnectStudy, studyAuth } from '../lib/cloud';
-import { exportStudy, studySnapshot, syncStudy } from '../lib/study-sync';
+import { exportStudy, planRestore, restoreStudy, studySnapshot, syncStudy, type RestorePlan } from '../lib/study-sync';
 import { useAppStore } from '../store/appStore';
 import { MemberAccess } from './MemberAccess';
 import { MemberStudy } from './MemberStudy';
 
 const hubOrigin = 'https://artx-hub.vercel.app';
+
+const collectionLabels: Record<string, string> = {
+  sessions: 'Simulados feitos',
+  englishProgress: 'Progresso de inglês',
+  englishEngine: 'Cadernos de inglês e espanhol',
+  srsCards: 'Cartões de revisão',
+  generatedContent: 'Conteúdo gerado',
+};
 
 export function StudyCloud({ children }: { children: ReactNode }) {
   return <MemberAccess app="study">{session => session.owner ? <OwnerStudyCloud>{children}</OwnerStudyCloud> : <MemberStudy key={session.principal} session={session}>{children}</MemberStudy>}</MemberAccess>;
@@ -23,6 +31,8 @@ function OwnerStudyCloud({ children }: { children: ReactNode }) {
   const [pending, setPending] = useState(false);
   const [hydrated, setHydrated] = useState('');
   const running = useRef<Promise<void> | null>(null);
+  const fileInput = useRef<HTMLInputElement | null>(null);
+  const [plan, setPlan] = useState<RestorePlan | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -93,12 +103,41 @@ function OwnerStudyCloud({ children }: { children: ReactNode }) {
 
   if (!ready || (owner && profile && hydrated !== `${owner}:${profile}`)) return <main className="study-access"><h1>Seus idiomas, no seu ritmo.</h1><p>{status}</p></main>;
   if (!owner && !local) return <main className="study-access"><form onSubmit={async event => { event.preventDefault(); if (!studyAuth || pending) return; setPending(true); try { const { error } = await studyAuth.auth.signInWithPassword({ email: email.trim(), password }); if (error) setStatus('Não foi possível entrar. Confira seus dados e a conexão.'); } catch { setStatus('Falha de conexão. Tente novamente.'); } finally { setPending(false); setPassword(''); } }}><small>ARTX / ESTUDOS</small><h1>Um novo dia.<br />Um passo no idioma.</h1><p>Use o mesmo acesso do Hub para guardar seu progresso entre dispositivos.</p><label>E-mail<input type="email" autoComplete="email" required value={email} onChange={event => setEmail(event.target.value)} /></label><label>Senha<input type="password" autoComplete="current-password" required value={password} onChange={event => setPassword(event.target.value)} /></label><p role="status">{status}</p><button disabled={pending || !studyAuth}>{pending ? 'Entrando…' : 'Entrar e sincronizar'}</button><a href={hubOrigin} target="_top">Abrir pelo ARTX Hub ↗</a><button type="button" className="study-local" onClick={() => { setLocal(true); setStatus('Somente neste dispositivo'); }}>Continuar com o histórico local</button></form></main>;
-  return <><div className="study-sync-bar" role="status"><span>{owner ? status : 'Modo local · progresso somente neste dispositivo'}</span><div>{owner && <button onClick={() => void sync()}>Sincronizar</button>}{profile && <button onClick={() => void exportStudy(profile)}>Exportar backup</button>}{owner && window.parent === window && <button onClick={async () => {
+  return <><div className="study-sync-bar" role="status"><span>{owner ? status : 'Modo local · progresso somente neste dispositivo'}</span><div>{owner && <button onClick={() => void sync()}>Sincronizar</button>}{profile && <button onClick={() => void exportStudy(profile)}>Exportar backup</button>}{profile && <button onClick={() => fileInput.current?.click()}>Restaurar</button>}{owner && window.parent === window && <button onClick={async () => {
     try {
       const result = await studyAuth?.auth.signOut({ scope: 'local' });
       if (result?.error) throw result.error;
       disconnectStudy(); setOwner(null); setLocal(false); setHydrated('');
       setStatus('Você saiu da conta. O histórico local foi preservado.');
     } catch { setStatus('Não foi possível sair da conta. Confira a conexão e tente novamente.'); }
-  }}>Sair da conta</button>}</div></div>{children}</>;
+  }}>Sair da conta</button>}</div></div>
+  <input ref={fileInput} type="file" accept="application/json,.json" hidden onChange={async event => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    try { setPlan(planRestore(await file.text())); }
+    catch (error) { setStatus(error instanceof Error ? error.message : 'Não foi possível ler o arquivo.'); }
+  }} />
+  {plan && profile && <div className="study-restore" role="dialog" aria-modal="true" aria-labelledby="restore-title">
+    <div>
+      <h2 id="restore-title">Restaurar backup em “{profile}”?</h2>
+      <p>Exportado em {plan.backup.exportedAt ? new Date(plan.backup.exportedAt).toLocaleString('pt-BR') : 'data não informada'}{plan.backup.profile && plan.backup.profile !== profile ? ` pelo perfil “${plan.backup.profile}”` : ''}.</p>
+      <ul>
+        {Object.entries(plan.counts).map(([name, count]) => <li key={name}><span>{collectionLabels[name] ?? name}</span><strong>{count}</strong></li>)}
+      </ul>
+      <p className="study-restore-warning">Isto <strong>substitui</strong> o progresso atual do perfil “{profile}”. O que estiver só neste dispositivo e não estiver no arquivo será perdido. Exporte um backup antes se tiver dúvida.</p>
+      <div>
+        <button onClick={() => setPlan(null)}>Cancelar</button>
+        <button className="study-restore-confirm" disabled={plan.total === 0} onClick={async () => {
+          try {
+            await restoreStudy(profile, plan);
+            setPlan(null);
+            setStatus(`Backup restaurado: ${plan.total} registros. Recarregando…`);
+            setTimeout(() => window.location.reload(), 900);
+          } catch { setStatus('Não foi possível restaurar. Seu progresso atual continua intacto.'); }
+        }}>{plan.total === 0 ? 'Arquivo vazio' : `Restaurar ${plan.total} registros`}</button>
+      </div>
+    </div>
+  </div>}
+  {children}</>;
 }
