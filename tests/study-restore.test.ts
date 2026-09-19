@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 // O módulo real toca Dexie e o Supabase. Aqui interessa a leitura e a validação
 // do arquivo, que é a parte que decide se um backup volta ou não.
