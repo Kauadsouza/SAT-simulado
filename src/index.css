@@ -310,3 +310,20 @@ body { overflow-x: hidden; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .study-access{min-height:100dvh;display:grid;place-content:center;padding:28px;background:var(--bg-primary);color:var(--text-primary)}.study-access form{width:min(420px,88vw);padding:30px;border:1px solid var(--border);border-radius:24px;background:var(--bg-card)}.study-access h1{font-size:34px;line-height:1.15;font-weight:800;letter-spacing:-1px;margin:20px 0}.study-access p{color:var(--text-secondary);font-size:13px;line-height:1.7;margin:16px 0}.study-access small{color:var(--accent);letter-spacing:2px}.study-access label{display:block;font-size:13px;margin:16px 0}.study-access input{display:block;width:100%;border:1px solid var(--border);padding:12px;border-radius:9px;background:var(--bg-secondary);color:var(--text-primary);margin-top:7px}.study-access button{padding:12px;border-radius:10px;width:100%;background:var(--accent);color:white}.study-access a{display:block;text-align:center;margin:18px 0;color:var(--accent)}.study-access .study-local{background:transparent;border:1px solid var(--border);color:var(--text-secondary);font-size:12px}.study-sync-bar{display:flex;justify-content:space-between;gap:14px;padding:10px 20px;font-size:12px;line-height:1.5;background:var(--bg-secondary);border-bottom:1px solid var(--border);color:var(--text-secondary)}.study-sync-bar>div{display:flex;gap:15px;flex-shrink:0}.study-sync-bar button{color:var(--accent);cursor:pointer}.study-loading{padding:40px;text-align:center;color:var(--text-secondary)}@media(max-width:600px){.study-sync-bar{flex-direction:column;gap:6px}}
+
+/* Diálogo de restauração de backup. Sobrescrever progresso é irreversível,
+   então a confirmação mostra exatamente o que vem no arquivo antes de gravar. */
+.study-restore{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:20px;background:rgba(0,0,0,.72)}
+.study-restore>div{width:min(460px,100%);max-height:88vh;overflow:auto;padding:26px;border:1px solid var(--border);border-radius:18px;background:var(--bg-card);color:var(--text-primary)}
+.study-restore h2{margin:0 0 10px;font-size:19px;line-height:1.3}
+.study-restore p{margin:0 0 14px;color:var(--text-secondary);font-size:13px;line-height:1.6}
+.study-restore ul{margin:0 0 16px;padding:0;list-style:none;border:1px solid var(--border);border-radius:11px;overflow:hidden}
+.study-restore li{display:flex;justify-content:space-between;gap:12px;padding:9px 13px;font-size:13px;background:var(--bg-secondary)}
+.study-restore li+li{border-top:1px solid var(--border)}
+.study-restore li span{color:var(--text-secondary)}
+.study-restore-warning{padding:12px 13px;border-radius:10px;background:rgba(241,186,102,.1);color:var(--text-primary)!important}
+.study-restore>div>div{display:flex;gap:10px;justify-content:flex-end}
+.study-restore button{min-height:44px;padding:11px 18px;border:1px solid var(--border);border-radius:10px;background:transparent;color:var(--text-secondary);font-size:13px;cursor:pointer}
+.study-restore-confirm{border-color:var(--accent)!important;background:var(--accent)!important;color:#fff!important;font-weight:600}
+.study-restore-confirm:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:520px){.study-restore>div>div{flex-direction:column-reverse}.study-restore button{width:100%}}
