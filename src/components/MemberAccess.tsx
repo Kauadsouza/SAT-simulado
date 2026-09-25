@@ -4,7 +4,9 @@ import { useEffect, useState, type ReactNode } from 'react';
 
 export type AccountSession = { token: string; principal: string; owner: boolean; username?: string };
 // Shared by the account-specific workspace wrapper in this application.
-export const MEMBER_API = 'https://sistema-videos.vercel.app/api/members';
+/* O serviço de contas é do Hub. Este sistema não fala com nenhum outro
+   sistema — só com o Hub, que é o único ponto que centraliza. */
+export const MEMBER_API = 'https://artx-hub.vercel.app/api/contas';
 // eslint-disable-next-line react-refresh/only-export-components
 export async function accountRequest(action: string, app: string, data: Record<string, unknown> = {}, token = '') {
   const response = await fetch(MEMBER_API, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify({ ...data, action, app }), signal: AbortSignal.timeout(20000) });
