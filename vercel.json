@@ -25,11 +25,19 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "frame-ancestors https://artx-hub.vercel.app"
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; form-action 'self'; frame-ancestors https://artx-hub.vercel.app; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' https://artx-hub.vercel.app https://*.supabase.co wss://*.supabase.co https://api.mymemory.translated.net; frame-src https://www.desmos.com; media-src 'self' blob:; worker-src 'self' blob:; upgrade-insecure-requests"
         },
         {
           "key": "Strict-Transport-Security",
-          "value": "max-age=63072000; includeSubDomains"
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), geolocation=(), payment=(), usb=(), microphone=(self)"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin-allow-popups"
         }
       ]
     }
