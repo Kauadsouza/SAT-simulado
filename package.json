@@ -14,7 +14,7 @@
     "@supabase/supabase-js": "^2.110.0",
     "@tailwindcss/vite": "^4.3.1",
     "dexie": "^4.4.3",
-    "katex": "^0.17.0",
+    "katex": "^0.18.9",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-katex": "^3.1.0",
